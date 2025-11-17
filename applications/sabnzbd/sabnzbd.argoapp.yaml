@@ -12,6 +12,10 @@ spec:
     repoURL: https://k8s-at-home.com/charts/
     chart: sabnzbd
     targetRevision: 9.4.2
+    helm:
+      values: |
+        env:
+          host_whitelist: "sabnzbd.lab.tailandtraillabs.com"
   syncPolicy:
     automated:
       prune: true
