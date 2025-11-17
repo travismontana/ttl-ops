@@ -15,7 +15,7 @@ spec:
     helm:
       values: |
         env:
-          host_whitelist: "sabnzbd.lab.tailandtraillabs.com"
+          HOST_WHITELIST_ENTRIES: "sabnzbd.lab.tailandtraillabs.com"
   syncPolicy:
     automated:
       prune: true
