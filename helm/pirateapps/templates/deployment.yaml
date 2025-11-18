@@ -30,18 +30,6 @@ spec:
           value: {{ .Values.env.TZ | quote }}
         - name: HAS_IPV6
           value: {{ .Values.env.HAS_IPV6 | quote }}
-        livenessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.port }}
-          initialDelaySeconds: 15
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.port }}
-          initialDelaySeconds: 5
-          periodSeconds: 5
         volumeMounts:
         - name: config
           mountPath: /config
