@@ -15,9 +15,9 @@ spec:
     helm:
       parameters:
       - name: name
-        value: bazarr
+        value: heimdall
       - name: port
-        value: "6767"
+        value: "80"
   syncPolicy:
     automated:
       prune: true
