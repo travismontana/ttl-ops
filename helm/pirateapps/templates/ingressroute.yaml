@@ -3,7 +3,7 @@ kind: IngressRoute
 metadata:
   name: {{ .Values.name }}
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: {{ .Values.hostname }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.name }}.lab.tailandtraillabs.com
 spec:
   entryPoints:
   - websecure
