@@ -9,7 +9,7 @@ spec:
     namespace: pirateapps
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/travismontana/ttl-ops
+    repoURL: https://github.com/travismontana/ttl-ops.git
     chart: applications
     targetRevision: main
   syncPolicy:
