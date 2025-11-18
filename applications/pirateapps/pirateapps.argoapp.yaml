@@ -10,8 +10,10 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/travismontana/ttl-ops.git
-    chart: applications
+    path: applications/
     targetRevision: main
+    directory:
+      recurse: true
   syncPolicy:
     automated:
       prune: true
