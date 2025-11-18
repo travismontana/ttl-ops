@@ -1,5 +1,6 @@
 name: app
 repo: lscr.io/linuxserver
+version: latest
 port: 8080
 
 nfs:
