@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/travismontana/ttl-ops
-    chart: helm/pirateapps
+    chart: applications
     targetRevision: main
   syncPolicy:
     automated:
