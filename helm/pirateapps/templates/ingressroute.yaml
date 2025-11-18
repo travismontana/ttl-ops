@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.name }}
   annotations:
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.name }}.lab.tailandtraillabs.com
+    external-dns.alpha.kubernetes.io/ttl: "300"
 spec:
   entryPoints:
   - websecure
