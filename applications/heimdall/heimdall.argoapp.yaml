@@ -1,17 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: heimdall
+  name: pirateapps
   namespace: argocd
 spec:
   project: default
   destination:
-    namespace: heimdall
+    namespace: pirateapps
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://k8s-at-home.com/charts/
-    chart: heimdall
-    targetRevision: 8.4.2
+    repoURL: https://github.com/travismontana/ttl-ops
+    chart: helm/pirateapps
+    targetRevision: main
+    helm:
+      parameters:
+      - name: name
+        value: bazarr
+      - name: port
+        value: "6767"
   syncPolicy:
     automated:
       prune: true

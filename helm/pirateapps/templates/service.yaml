@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.name }}
 spec:
   selector:
-    app: {{ .Values.name }}
+    tailandtraillabs.com/app: {{ .Values.name }}
   ports:
   - name: {{ .Values.name }}
     port: {{ .Values.port }}

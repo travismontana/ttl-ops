@@ -9,11 +9,13 @@ spec:
     namespace: sabnzbd
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://k8s-at-home.com/charts/
-    chart: sabnzbd
-    targetRevision: 9.4.2
+    repoURL: https://github.com/travismontana/ttl-ops
+    chart: helm/pirateapps
+    targetRevision: main
     helm:
       values: |
+        name: sabnzbd
+        port: 8080
         env:
           HOST_WHITELIST_ENTRIES: "sabnzbd.lab.tailandtraillabs.com"
   syncPolicy:

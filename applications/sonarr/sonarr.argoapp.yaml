@@ -1,17 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sonarr
+  name: pirateapps
   namespace: argocd
 spec:
   project: default
   destination:
-    namespace: sonarr
+    namespace: pirateapps
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://k8s-at-home.com/charts/
-    chart: sonarr
-    targetRevision: 16.3.2
+    repoURL: https://github.com/travismontana/ttl-ops
+    chart: helm/pirateapps
+    targetRevision: main
+    helm:
+      parameters:
+      - name: name
+        value: sonarr
+      - name: port
+        value: "8989"
   syncPolicy:
     automated:
       prune: true

@@ -12,12 +12,6 @@ spec:
     repoURL: https://github.com/travismontana/ttl-ops
     chart: helm/pirateapps
     targetRevision: main
-    helm:
-      parameters:
-      - name: name
-        value: prowlarr
-      - name: port
-        value: "9696"
   syncPolicy:
     automated:
       prune: true
