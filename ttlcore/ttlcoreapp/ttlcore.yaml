@@ -10,7 +10,7 @@ key:
       
     - name: loki
       chart: loki-distributed
-      version: "6.46.0"  # example version
+      version: "0.80.6"  # example version
       releaseName: loki
       repoUrl: "https://grafana.github.io/helm-charts"
       namespace: monitoring
