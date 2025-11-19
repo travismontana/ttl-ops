@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ttlcore-applicationset
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/travismontana/ttl-ops
+          revision: HEAD
+          files:
+          - path: ttlcore/ttlcoreapp/ttlcore.yaml
+      - list:
+          elementsYaml: "{{ .key.components | toJson }}"
+  template:
+    metadata:
+      name: '{{.name}}'
+      annotations:
+        argocd.argoproj.io/sync-wave: '{{.syncWave}}'
+    spec:
+      project: default
+      syncPolicy:
+        automated:
+          selfHeal: true    
+        syncOptions:
+        - CreateNamespace=true        
+      sources:
+        - chart: '{{.chart}}'
+          repoURL: '{{.repoUrl}}'
+          targetRevision: '{{.version}}'
+          helm:
+            releaseName: '{{.releaseName}}'
+            valuesFiles:
+              - ../{{.name}}/values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.namespace}}'

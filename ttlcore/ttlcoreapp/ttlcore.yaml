@@ -1,0 +1,18 @@
+key:
+  components:
+    - name: kube-prometheus-stack
+      chart: kube-prometheus-stack
+      version: "79.5.0"  # example version
+      releaseName: kube-prometheus-stack
+      repoUrl: "https://prometheus-community.github.io/helm-charts"
+      namespace: monitoring
+      syncWave: "0"  # first
+      
+    - name: loki
+      chart: loki
+      version: "6.46.0"  # example version
+      releaseName: loki
+      repoUrl: "https://grafana.github.io/helm-charts"
+      namespace: monitoring
+      syncWave: "1"  # second
+      

@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vector
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: vector
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://helm.vector.dev
+    chart: vector
+    targetRevision: 0.48.0
+    helm:
+      values: |
+        global:
+          enabled: true
+        vector:
+          deployment:
+            replicas: 2
+          config:
+            apiVersion: vector.dev/v1
+            sources:
+              my_source:
+                type: "stdin"
+            sinks:
+              my_sink:
+                type: "console"
+                inputs: ["my_source"]
+                encoding:
+                  codec: "json"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

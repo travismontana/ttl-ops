@@ -1,0 +1,45 @@
+commonLabels: 
+  ttlcore.bob/function: monitoring
+
+crds:
+  upgradeJob:
+    enabled: true
+
+labels:
+  ttlcore.bob/defaultrule: "true"
+
+alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - alertmanager.lab.tailandtraillabs.com
+    tls:
+      - secretName: alertmanager-tls
+        hosts:
+          - alertmanager.lab.tailandtraillabs.com
+
+grafana:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.lab.tailandtraillabs.com
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.lab.tailandtraillabs.com  
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - prometheus.lab.tailandtraillabs.com
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.lab.tailandtraillabs.com
