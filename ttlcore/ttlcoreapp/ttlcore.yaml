@@ -8,10 +8,10 @@ key:
       namespace: monitoring
       syncWave: "0"  # first
       
-    - name: loki
+    - name: loki-distributed
       chart: loki-distributed
       version: "0.80.6"  # example version
-      releaseName: loki
+      releaseName: loki-distributed
       repoUrl: "https://grafana.github.io/helm-charts"
       namespace: monitoring
       syncWave: "1"  # second
