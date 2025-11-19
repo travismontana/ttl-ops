@@ -9,7 +9,7 @@ key:
       syncWave: "0"  # first
       
     - name: loki
-      chart: loki
+      chart: loki-distributed
       version: "6.46.0"  # example version
       releaseName: loki
       repoUrl: "https://grafana.github.io/helm-charts"

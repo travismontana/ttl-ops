@@ -34,7 +34,7 @@ spec:
           targetRevision: '{{.version}}'
           helm:
             releaseName: '{{.releaseName}}'
-            valuesFiles:
+            valueFiles:
               - ../{{.name}}/values.yaml
       destination:
         server: https://kubernetes.default.svc
