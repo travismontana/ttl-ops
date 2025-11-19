@@ -27,7 +27,8 @@ spec:
         automated:
           selfHeal: true    
         syncOptions:
-        - CreateNamespace=true        
+        - CreateNamespace=true
+        - ServerSideApply=true     
       sources:
         - chart: '{{.chart}}'
           repoURL: '{{.repoUrl}}'

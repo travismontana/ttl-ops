@@ -66,6 +66,7 @@ gateway:
     type: LoadBalancer
   ingress:
     enabled: true
+    className: traefik
     hosts:
       - loki.lab.tailandtraillabs.com
     tls:
