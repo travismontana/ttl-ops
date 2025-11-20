@@ -31,15 +31,10 @@ locals {
   ])
 }
 
-resource "random_id" "vm_suffix" {
-  count       = var.cluster_numnodes
-  byte_length = 3 # generates 6 character hex string
-}
 
 resource "proxmox_virtual_environment_vm" "cluster_vms" {
   count       = var.cluster_numnodes
   name        = "${var.cluster_name}-node${count.index}" 
-  #name        = count.index == 0 ? "${var.cluster_name}-node0" : "${var.cluster_name}-${random_id.vm_suffix[count.index].hex}"
   node_name   = var.proxmox_node
   description = "Managed by Terraform"
   tags        = ["terraform", "ubuntu" ,var.cluster_name]
@@ -148,6 +143,7 @@ locals {
   ssh_public_key  = file("/home/bob/.ssh/id_ed25519.pub")
   ssh_private_key = file("/home/bob/.ssh/id_ed25519")
   ubuntu_vm_password = "n2260m"
+  aws_credentials = file("/home/bob/.a/aws_key")
 }
 
 output "ubuntu_vm_password" {
@@ -212,6 +208,7 @@ write_files:
     owner: root:root
     content: |
       #!/bin/bash
+      exec >> /tmp/k3s_install.log 2>&1
       set -e
       
       log() {
@@ -259,7 +256,6 @@ write_files:
           sleep 5
         done    
 
-
         log "Creating external-dns namespace..."
         kubectl create namespace external-dns || true
 
@@ -286,9 +282,9 @@ write_files:
         log "Waiting for ArgoCD to be ready..."
         kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-        log "Getting cluster name from node labels..."
-        CLUSTER_NAME=$(kubectl get node ${var.cluster_name}-node0 -o jsonpath='{.metadata.labels.clustername}')
-        
+        log "Install the core app"
+        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml
+
         umount /danas
         sync
         sync
@@ -315,8 +311,7 @@ runcmd:
   - [ systemctl, enable, avahi-daemon ]
   - [ systemctl, start, --no-block, avahi-daemon ]
   - [ wget https://get.k3s.io, -O, /tmp/k3s.sh ]
-  - [ bash, /tmp/runinstall.sh, >> /tmp/k3s_install.log 2>&1 ]
-    
+  - [ bash, /tmp/runinstall.sh  ]
 EOF    
   }
 }

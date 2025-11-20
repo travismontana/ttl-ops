@@ -2,30 +2,32 @@ key:
   components:
     - name: external-dns
       chart: external-dns
-      version: "5.7.4"  # example version
+      version: "5.7.4"
       releaseName: external-dns
       repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
       namespace: core
-      syncWave: "0"  # first
+      syncWave: "0"
     - name: cert-manager
       chart: cert-manager
-      version: "5.7.4"  # example version
+      version: "5.7.4"
       releaseName: cert-manager
-      repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
+      repoUrl: "https://charts.jetstack.io"
       namespace: core
-      syncWave: "0"  # first
+      syncWave: "0"
+      parameters:
+        - name: crds.enabled
+          value: "true"
     - name: reflector
       chart: reflector
-      version: "9.1.39"  # example version
+      version: "9.1.39"
       releaseName: reflector
       repoUrl: "https://emberstack.github.io/helm-charts/"
       namespace: core
-      syncWave: "0"  # first
+      syncWave: "0"
     - name: dashboard
       chart: kubernetes-dashboard
-      version: "7.14.0"  # example version
+      version: "7.14.0"
       releaseName: kubernetes-dashboard
       repoUrl: "https://kubernetes.github.io/dashboard/"
       namespace: core
-      syncWave: "1"  # second
-    
+      syncWave: "1"
