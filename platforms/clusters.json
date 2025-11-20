@@ -1,11 +1,11 @@
 {
-    "domainname": "tailandtraillabs.com",
+    "domainname": "tailandtraillabs.org",
     "cluster": [
         {
             "name": "pirate",
             "site": "lab",
             "owner": "ttl-ops",
-            "numnodes": 3,
+            "numnodes": 2,
             "appgroups": [
                 {
                     "pirate": true
@@ -16,7 +16,7 @@
             "name": "monitoring",
             "site": "lab",
             "owner": "ttl-ops",
-            "numnodes": 3,
+            "numnodes": 2,
             "appgroups": [
                 {
                     "monitoring": true

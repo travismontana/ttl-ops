@@ -1,0 +1,13 @@
+users:
+  - name: bob
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMoNIBEOBhaObNW2hoUNX1/q8XCVKdrKmcCCjmvijRU1 bob@groth
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+
+packages:
+  - nfs-common
+
+package_update: true
+package_upgrade: false

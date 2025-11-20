@@ -1,0 +1,12 @@
+app:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts:
+      - host: {{ index .metadata.labels "cluster-name" }}.abode.tailandtraillabs.org
+        paths:
+          - /dashboard
+    tls:
+      - secretName: wildcard-tls
+        hosts:
+          - {{ index .metadata.labels "cluster-name" }}.abode.tailandtraillabs.org

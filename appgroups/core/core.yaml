@@ -1,0 +1,31 @@
+key:
+  components:
+    - name: external-dns
+      chart: external-dns
+      version: "5.7.4"  # example version
+      releaseName: external-dns
+      repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
+      namespace: core
+      syncWave: "0"  # first
+    - name: cert-manager
+      chart: cert-manager
+      version: "5.7.4"  # example version
+      releaseName: cert-manager
+      repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
+      namespace: core
+      syncWave: "0"  # first
+    - name: reflector
+      chart: reflector
+      version: "9.1.39"  # example version
+      releaseName: reflector
+      repoUrl: "https://emberstack.github.io/helm-charts/"
+      namespace: core
+      syncWave: "0"  # first
+    - name: dashboard
+      chart: kubernetes-dashboard
+      version: "7.14.0"  # example version
+      releaseName: kubernetes-dashboard
+      repoUrl: "https://kubernetes.github.io/dashboard/"
+      namespace: core
+      syncWave: "1"  # second
+    
