@@ -7,6 +7,7 @@ key:
       repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
       namespace: core
       syncWave: "0"
+      parameters: []
     - name: cert-manager
       chart: cert-manager
       version: "5.7.4"
@@ -24,6 +25,7 @@ key:
       repoUrl: "https://emberstack.github.io/helm-charts/"
       namespace: core
       syncWave: "0"
+      parameters: []
     - name: dashboard
       chart: kubernetes-dashboard
       version: "7.14.0"
@@ -31,3 +33,4 @@ key:
       repoUrl: "https://kubernetes.github.io/dashboard/"
       namespace: core
       syncWave: "1"
+      parameters: []
