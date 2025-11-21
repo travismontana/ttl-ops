@@ -5,6 +5,9 @@ metadata:
   namespace: cert-manager  # Or whatever namespace you want
 spec:
   secretName: wildcard-tls
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
   issuerRef:
     name: letsencrypt-prod  # Use staging first to test
     kind: ClusterIssuer

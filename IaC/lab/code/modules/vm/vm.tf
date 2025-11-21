@@ -269,25 +269,26 @@ write_files:
 
         log "Creating argocd namespace..."
         kubectl create namespace argocd || true
-        
-        log "Creating ArgoCD in-cluster secret..."
-        kubectl create secret generic cluster-in-cluster -n argocd \
-          --from-literal=name=in-cluster \
-          --from-literal=server=https://kubernetes.default.svc \
-          --dry-run=client -o yaml | kubectl apply -f -
-
-        log "Labeling in-cluster ArgoCD secret with cluster-name..."
-        kubectl label secret cluster-in-cluster -n argocd \
-          argocd.argoproj.io/secret-type=cluster \
-          cluster-name="${var.cluster_name}" \
-          --overwrite
-
+      
         log "Installing ArgoCD..."
         kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
         
         log "Waiting for ArgoCD to be ready..."
         kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
+        log "Creating ArgoCD in-cluster secret..."
+        kubectl create secret generic cluster-in-cluster \
+          -n argocd \
+          --from-literal=name=in-cluster \
+          --from-literal=server=https://kubernetes.default.svc \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+        kubectl label secret cluster-in-cluster \
+          -n argocd \
+          argocd.argoproj.io/secret-type=cluster \
+          cluster-name="${var.cluster_name}" \
+          --overwrite
+          
         log "Install the core app"
         kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml
 
