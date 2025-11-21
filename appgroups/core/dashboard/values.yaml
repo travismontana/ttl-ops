@@ -1,3 +1,5 @@
+clusterName: ""  # Will be overridden
+
 app:
   enabled: true
   ingress:
