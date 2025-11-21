@@ -270,9 +270,15 @@ write_files:
         log "Creating argocd namespace..."
         kubectl create namespace argocd || true
         
-        log "Labeling in-cluster ArgoCD secret..."
-        kubectl label secret -n argocd \
-          -l argocd.argoproj.io/secret-type=cluster \
+        log "Creating ArgoCD in-cluster secret..."
+        kubectl create secret generic cluster-in-cluster -n argocd \
+          --from-literal=name=in-cluster \
+          --from-literal=server=https://kubernetes.default.svc \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+        log "Labeling in-cluster ArgoCD secret with cluster-name..."
+        kubectl label secret cluster-in-cluster -n argocd \
+          argocd.argoproj.io/secret-type=cluster \
           cluster-name="${var.cluster_name}" \
           --overwrite
 
