@@ -15,9 +15,6 @@ key:
       repoUrl: "https://charts.jetstack.io"
       namespace: core
       syncWave: "0"
-      parameters:
-        - name: crds.enabled
-          value: "true"
     - name: reflector
       chart: reflector
       version: "9.1.39"
