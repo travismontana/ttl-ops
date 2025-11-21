@@ -3,10 +3,10 @@ app:
   ingress:
     enabled: true
     hosts:
-      - host: {{ index .metadata.labels "cluster-name" }}.abode.tailandtraillabs.org
+      - host: "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
         paths:
           - /dashboard
     tls:
       - secretName: wildcard-tls
         hosts:
-          - {{ index .metadata.labels "cluster-name" }}.abode.tailandtraillabs.org
+          - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
