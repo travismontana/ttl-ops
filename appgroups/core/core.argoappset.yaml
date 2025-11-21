@@ -37,7 +37,11 @@ spec:
             releaseName: '{{.releaseName}}'
             valueFiles:
               - ../{{.name}}/values.yaml
-            parameters: {{.parameters | toJson}}
+            parameters:
+{{- range .parameters }}
+              - name: {{ .name }}
+                value: "{{ .value }}"
+{{- end }}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.namespace}}'
