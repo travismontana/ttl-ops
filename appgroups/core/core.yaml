@@ -2,7 +2,7 @@ key:
   components:
     - name: external-dns
       chart: external-dns
-      version: "5.7.4"
+      version: "1.19.0"
       releaseName: external-dns
       repoUrl: "https://kubernetes-sigs.github.io/external-dns/"
       namespace: core
