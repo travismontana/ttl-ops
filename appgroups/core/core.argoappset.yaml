@@ -8,13 +8,19 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   generators:
   - matrix:
+      mergeKeys:
+        - name
       generators:
       - clusters:
           selector:
             matchLabels:
               argocd.argoproj.io/secret-type: cluster
+          template:
+            metadata:
+              name: '{{.name}}'
+            spec: {}
       - matrix:
-          generators:    
+          generators:
           - git:
               repoURL: https://github.com/travismontana/ttl-ops
               revision: HEAD
@@ -22,6 +28,7 @@ spec:
               - path: appgroups/core/core.yaml
           - list:
               elementsYaml: "{{ .key.components | toJson }}"
+
   template:
     metadata:
       name: '{{.name}}'
