@@ -1,0 +1,7 @@
+name: dashboard
+chart: kubernetes-dashboard
+version: "7.14.0"
+releaseName: kubernetes-dashboard
+repoUrl: "https://kubernetes.github.io/dashboard/"
+namespace: core
+syncWave: "1"

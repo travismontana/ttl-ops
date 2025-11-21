@@ -16,29 +16,23 @@ spec:
           repoURL: https://github.com/travismontana/ttl-ops
           revision: HEAD
           files:
-          - path: appgroups/core/core.yaml
+          - path: appgroups/core/*.yaml
   template:
     metadata:
       name: '{{ index .key.name }}'
     spec:
       project: default
       destination:
-        server: '{{.server}}'
-      source:
-        repoURL: '{{ index .key.repoUrl }}'
-        chart: '{{ index .key.chart }}'
-        targetRevision: '{{ index .key.version }}'
-        helm:
-          releaseName: '{{ index .key.releaseName }}'
-          valueFiles:
-            - $values/appgroups/core/{{ index .key.name }}/values.yaml
-          parameters:
-            - name: clusterName
-              value: '{{ index .metadata.labels "cluster-name" }}'
+        server: '{{.server}}''
+        namespace: core
       sources:
-        - repoURL: https://github.com/travismontana/ttl-ops
-          targetRevision: HEAD
-          ref: values
+        - chart: '{{.chart}}'
+          repoURL: '{{.repoUrl}}'
+          targetRevision: '{{.version}}'
+          helm:
+            releaseName: '{{.releaseName}}'
+            valueFiles:
+              - $values/appgroups/core/{{.name}}/values.yaml
       syncPolicy:
         automated:
           prune: true
