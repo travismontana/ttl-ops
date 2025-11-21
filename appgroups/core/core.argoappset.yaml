@@ -37,8 +37,7 @@ spec:
             releaseName: '{{.releaseName}}'
             valueFiles:
               - ../{{.name}}/values.yaml
-            parameters: 
-            {{ .parameters | toYaml | nindent 14 }}
+            parameters: {{.parameters | toJson}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.namespace}}'
