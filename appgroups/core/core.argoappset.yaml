@@ -27,8 +27,7 @@ spec:
         automated:
           selfHeal: true    
         syncOptions:
-        - CreateNamespace=true
-        - ServerSideApply=true     
+        - CreateNamespace=true     
       sources:
         - chart: '{{.chart}}'
           repoURL: '{{.repoUrl}}'
@@ -36,7 +35,7 @@ spec:
           helm:
             releaseName: '{{.releaseName}}'
             valueFiles:
-              - ../{{.name}}/values.yaml
+              - ./{{.name}}/values.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.namespace}}'
