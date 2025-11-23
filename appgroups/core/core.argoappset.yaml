@@ -26,6 +26,9 @@ spec:
         server: '{{.server}}'
         namespace: core
       sources:
+        - repoURL: https://github.com/travismontana/ttl-ops
+          targetRevision: HEAD
+          ref: values
         - chart: '{{.chart}}'
           repoURL: '{{.repoUrl}}'
           targetRevision: '{{.version}}'
