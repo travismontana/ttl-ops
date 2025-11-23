@@ -15,10 +15,10 @@ spec:
       - git:
           repoURL: https://github.com/travismontana/ttl-ops
           revision: HEAD
-          #files:
-          #- path: appgroups/core/[!c]*.yaml
-          directories:
-          - path: appgroups/core/*
+          files:
+          - path: appgroups/core/*.yaml
+          #directories:
+          #- path: appgroups/core/*
   template:
     metadata:
       name: '{{.name}}-{{.path.basename}}'
