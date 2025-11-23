@@ -29,8 +29,8 @@ spec:
         - repoURL: https://github.com/travismontana/ttl-ops
           targetRevision: HEAD
           ref: values
-        - chart: '{{.chart}}'
-          repoURL: '{{.repoUrl}}'
+        - chart: '{{index .chart}}'
+          repoURL: '{{index .repoUrl}}'
           targetRevision: '{{.version}}'
           helm:
             releaseName: '{{.releaseName}}'
