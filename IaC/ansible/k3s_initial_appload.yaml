@@ -1,0 +1,165 @@
+---
+- name: Build dynamic inventory from clusters.json
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  remote_user: root
+  vars:
+    clusters_file: "./clusters.json"
+  
+  tasks:
+    - name: Read clusters.json
+      slurp:
+        src: "{{ clusters_file }}"
+      register: clusters_raw
+
+    - name: Parse clusters JSON
+      set_fact:
+        clusters_data: "{{ clusters_raw.content | b64decode | from_json }}"
+
+    - name: Add hosts dynamically
+      add_host:
+        name: "{{ item.0.name }}-node{{ item.1 }}"
+        ansible_user: ubuntu
+        groups: 
+          - k3s_cluster
+          - "cluster_{{ item.0.name }}"
+        ansible_host: "{{ item.0.name }}-node{{ item.1 }}.{{ clusters_data.domainname }}"
+        cluster_name: "{{ item.0.name }}"
+        domainname: "{{ clusters_data.domainname }}"
+        node_index: "{{ item.1 }}"
+        is_node0: "{{ item.1 == 0 }}"
+        site: "{{ item.0.site }}"
+        owner: "{{ item.0.owner }}"
+        appgroups: "{{ item.0.appgroups }}"
+        k3s_version: "v1.34.1+k3s1"
+        k3s_token: "N2260mN2260m"
+      loop: "{{ clusters_data.cluster | product(range(0, 10)) | list }}"
+      when: item.1 < item.0.numnodes
+
+- name: Install Initial App Load on k3s Cluster
+  hosts: k3s_cluster
+  become: yes
+  gather_facts: yes
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+  module_defaults:
+    group/kubernetes.core.k8s:
+      kubeconfig: /etc/rancher/k3s/k3s.yaml
+  tasks:
+    - name: Install necessary packages
+      when: is_node0
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - python3-kubernetes
+        state: present
+        update_cache: yes
+    - name: Ensure .kube directory exists
+      when: is_node0
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0700'
+    - name: copy kubeconfig to ubuntu home
+      when: is_node0
+      copy:
+        remote_src: yes
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: /home/ubuntu/.kube/config
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+    - name: Create argo namespace
+      when: is_node0
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: argocd
+
+    - name: Read AWS credentials file
+      when: is_node0
+      slurp:
+        src: /home/bob/.a/aws_key
+      delegate_to: localhost
+      register: aws_creds_file
+
+    - name: Parse AWS credentials
+      when: is_node0
+      set_fact:
+        aws_creds_lines: "{{ (aws_creds_file.content | b64decode).split('\n') }}"
+
+    - name: Extract AWS keys
+      when: is_node0
+      set_fact:
+        aws_access_key: "{{ aws_creds_lines | select('match', '^AWS_ACCESS_KEY_ID=') | first | regex_replace('^AWS_ACCESS_KEY_ID=', '') }}"
+        aws_secret_key: "{{ aws_creds_lines | select('match', '^AWS_SECRET_ACCESS_KEY=') | first | regex_replace('^AWS_SECRET_ACCESS_KEY=', '') }}"
+
+    - name: Ensure external-dns namespace exists
+      when: is_node0
+      shell: |
+        kubectl create namespace external-dns --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Create route53-credentials secret
+      when: is_node0
+      shell: |
+        kubectl create secret generic route53-credentials \
+          -n external-dns \
+          --from-literal=aws-access-key-id="{{ aws_access_key }}" \
+          --from-literal=aws-secret-access-key="{{ aws_secret_key }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Install argocd
+      when: is_node0
+      block:
+        - name: ARGOCD KUBERNETES | Download Kubernetes yaml file definition
+          get_url:
+            url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+            dest: /tmp/argocd_install.yaml
+            owner: root
+            group: root
+            mode: '0440'
+        
+        - name: ARGOCD KUBERNETES | Manage Kubernetes objects
+          kubernetes.core.k8s:
+            namespace: argocd
+            src: /tmp/argocd_install.yaml
+            state: present
+      always:
+        - name: ARGOCD KUBERNETES | Clean installation
+          file:
+            path: /tmp/argocd_install.yaml
+            state: absent
+
+    - name: Create cluster-in-cluster secret
+      when: is_node0
+      shell: |
+        kubectl create secret generic cluster-in-cluster \
+          -n argocd \
+          --from-literal=name=in-cluster \
+          --from-literal=server=https://kubernetes.default.svc \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Label cluster-in-cluster secret and install core app
+      when: is_node0
+      shell: |
+        kubectl label secret cluster-in-cluster \
+          -n argocd \
+          argocd.argoproj.io/secret-type=cluster \
+          cluster-name="{{ cluster_name }}" \
+          --overwrite
+    
+    - name: Install the core app
+      when: is_node0
+      shell: |
+        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml
