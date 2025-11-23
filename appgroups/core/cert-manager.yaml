@@ -1,4 +1,4 @@
-name: cert-manager
+appName: cert-manager
 chart: cert-manager
 version: "v1.19.1"
 releaseName: cert-manager

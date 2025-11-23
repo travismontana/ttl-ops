@@ -19,7 +19,7 @@ spec:
           - path: appgroups/core/[!c]*.yaml
   template:
     metadata:
-      name: '{{.name }}-{{.path.basename}}'
+      name: '{{.name}}-{{.path.basename}}'
     spec:
       project: default
       destination:

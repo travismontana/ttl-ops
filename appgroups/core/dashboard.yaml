@@ -1,4 +1,4 @@
-name: dashboard
+appName: dashboard
 chart: kubernetes-dashboard
 version: "7.14.0"
 releaseName: kubernetes-dashboard

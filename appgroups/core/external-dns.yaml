@@ -1,4 +1,4 @@
-name: external-dns
+appName: external-dns
 chart: external-dns
 version: "1.19.0"
 releaseName: external-dns
