@@ -23,7 +23,7 @@ spec:
     spec:
       project: default
       destination:
-        server: '{{.server}}''
+        server: '{{.server}}'
         namespace: core
       sources:
         - chart: '{{.chart}}'
