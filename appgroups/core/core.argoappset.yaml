@@ -35,7 +35,7 @@ spec:
           helm:
             releaseName: '{{.releaseName}}'
             valueFiles:
-              - $values/appgroups/core/{{.name}}/values.yaml
+              - $values/appgroups/core/{{.path.basename}}/values.yaml
       syncPolicy:
         automated:
           prune: true

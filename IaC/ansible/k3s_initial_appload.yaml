@@ -146,7 +146,7 @@
       shell: |
         kubectl create secret generic cluster-in-cluster \
           -n argocd \
-          --from-literal=name=in-cluster \
+          --from-literal=name={{cluster_name}} \
           --from-literal=server=https://kubernetes.default.svc \
           --dry-run=client -o yaml | kubectl apply -f -
 
