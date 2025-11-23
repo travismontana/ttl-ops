@@ -19,7 +19,7 @@ spec:
           - path: appgroups/core/*.yaml
   template:
     metadata:
-      name: '{{ index .key.name }}'
+      name: '{{ .name }}'
     spec:
       project: default
       destination:
