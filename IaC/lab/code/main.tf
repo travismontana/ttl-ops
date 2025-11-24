@@ -36,6 +36,24 @@ variable "token" {
   
 }
 
+variable ssh_public_key {
+  description = "Path to SSH public key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519.pub"
+}
+
+variable ssh_private_key {
+  description = "Path to SSH private key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519"
+}
+
+variable aws_credentials {
+  description = "Path to AWS credentials file"
+  type        = string
+  default     = "/home/bob/.aws/credentials"
+}
+
 locals {
     clusters_data = jsondecode(file(var.clusterfile))
 }
