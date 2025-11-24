@@ -1,0 +1,56 @@
+---
+kind: pipeline
+type: docker
+name: ansible-k3s
+
+steps:
+  - name: install-k3s
+    image: python:3.11
+    environment:
+      CLUSTERS_FILE: /drone/src/platforms/clusters.json
+    commands:
+      - pip install ansible
+      - cd IaC/ansible
+      - ansible-playbook 01-k3s-install.yml -e "clusters_file=$CLUSTERS_FILE"
+
+trigger:
+  event:
+    - custom
+
+---
+kind: pipeline
+type: docker
+name: ansible-argo
+
+steps:
+  - name: install-argo
+    image: python:3.11
+    environment:
+      CLUSTERS_FILE: /drone/src/platforms/clusters.json
+    commands:
+      - pip install ansible
+      - cd IaC/ansible
+      - ansible-playbook 02-argo-core.yml -e "clusters_file=$CLUSTERS_FILE"
+
+trigger:
+  event:
+    - custom
+
+---
+kind: pipeline
+type: docker
+name: ansible-apps
+
+steps:
+  - name: install-apps
+    image: python:3.11
+    environment:
+      CLUSTERS_FILE: /drone/src/platforms/clusters.json
+    commands:
+      - pip install ansible
+      - cd IaC/ansible
+      - ansible-playbook 03-cluster-apps.yml -e "clusters_file=$CLUSTERS_FILE"
+
+trigger:
+  event:
+    - custom
