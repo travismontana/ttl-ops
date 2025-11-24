@@ -11,7 +11,7 @@ steps:
     commands:
       - pip install ansible
       - cd IaC/ansible
-      - ansible-playbook 01-k3s-install.yml -e "clusters_file=$CLUSTERS_FILE"
+      - ansible-playbook k3s_main.yaml -e "clusters_file=$CLUSTERS_FILE"
 
 trigger:
   event:
@@ -30,7 +30,7 @@ steps:
     commands:
       - pip install ansible
       - cd IaC/ansible
-      - ansible-playbook 02-argo-core.yml -e "clusters_file=$CLUSTERS_FILE"
+      - ansible-playbook k3s_initial_appload.yaml -e "clusters_file=$CLUSTERS_FILE"
 
 trigger:
   event:
