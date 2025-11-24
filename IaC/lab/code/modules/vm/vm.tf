@@ -165,17 +165,17 @@ write_files:
     permissions: '0600'
     owner: root:root
     content: |
-      ${indent(6, file("/home/bob/.ssh/id_ed25519"))}
+      ${indent(6, var.ssh_private_key)}
   - path: /root/.ssh/id_ed25519.pub
     permissions: '0644'
     owner: root:root
     content: |
-      ${indent(6, file("/home/bob/.ssh/id_ed25519.pub"))}
+      ${indent(6, var.ssh_public_key)}
   - path: /tmp/aws_credentials
     permissions: '0600'
     owner: root:root
     content: |
-      ${indent(6, local.aws_credentials)}
+      ${indent(6, var.aws_credentials)}
 
 users:
   - default
