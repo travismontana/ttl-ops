@@ -5,7 +5,7 @@ name: tofu-k3s
 
 steps:
   - name: buildvms
-    image: opentofu/opentofu:latest
+    image: opentofu:latest
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
     commands:
