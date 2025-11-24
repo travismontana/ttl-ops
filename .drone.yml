@@ -8,6 +8,8 @@ steps:
     image: ghcr.io/opentofu/opentofu:latest
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      token: 
+        from_secret: proxmoxToken
     commands:
       - cd IaC/lab/code
       - tofu init
