@@ -1,6 +1,25 @@
 ---
 kind: pipeline
 type: docker
+name: tofu-k3s
+
+steps:
+  - name: buildvms
+    image: opentofu/opentofu:latest
+    environment:
+      CLUSTERS_FILE: /drone/src/platforms/clusters.json
+    commands:
+      - cd IaC/lab/code
+      - tofu init
+      - tofu plan -var "clusterfile=$CLUSTERS_FILE"
+
+trigger:
+  event:
+    - custom
+
+---
+kind: pipeline
+type: docker
 name: ansible-k3s
 
 steps:
