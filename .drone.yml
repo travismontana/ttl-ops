@@ -27,7 +27,9 @@ steps:
       - tofu init
       - tofu plan -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
       - eval $(ssh-agent -s)
-      - echo "${SSHPRIVKEY}" | ssh-add -
+      - echo "$SSHPRIVKEY" > /tmp/id_ed25519
+      - chmod 600 /tmp/id_ed25519
+      - ssh-add /tmp/id_ed25519
       - tofu apply -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
 
 
