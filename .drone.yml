@@ -26,6 +26,8 @@ steps:
       - cd IaC/lab/code
       - tofu init
       - tofu plan -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
+      - tofu apply -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
+
 
 trigger:
   event:
