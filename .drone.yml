@@ -36,6 +36,9 @@ kind: pipeline
 type: docker
 name: ansible-k3s
 
+depends_on:
+  - tofu-k3s
+
 steps:
   - name: install-k3s
     image: python:3.11
@@ -55,6 +58,9 @@ kind: pipeline
 type: docker
 name: ansible-argo
 
+depends_on:
+  - ansible-k3s
+
 steps:
   - name: install-argo
     image: python:3.11
@@ -73,6 +79,9 @@ trigger:
 kind: pipeline
 type: docker
 name: ansible-apps
+
+depends_on:
+  - ansible-argo
 
 steps:
   - name: install-apps
