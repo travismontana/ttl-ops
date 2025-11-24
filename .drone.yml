@@ -41,6 +41,11 @@ trigger:
   event:
     - custom
 
+volumes:
+  - name: terraform-cache
+    host:
+      path: /terraform
+
 ---
 kind: pipeline
 type: docker
