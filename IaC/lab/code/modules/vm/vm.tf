@@ -115,19 +115,31 @@ data "proxmox_virtual_environment_file" "latest_ubuntu" {
 }
 
 # Remove the tls_private_key resource entirely, replace with locals
-locals {
-  ssh_public_key  = file("/home/bob/.ssh/id_ed25519.pub")
-  ssh_private_key = file("/home/bob/.ssh/id_ed25519")
-  aws_credentials = file("/home/bob/.a/aws_key")
+variable ssh_public_key {
+  description = "Path to SSH public key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519.pub"
+}
+
+variable ssh_private_key {
+  description = "Path to SSH private key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519"
+}
+
+variable aws_credentials {
+  description = "Path to AWS credentials file"
+  type        = string
+  default     = "/home/bob/.aws/credentials"
 }
 
 output "ubuntu_vm_private_key" {
-  value     = local.ssh_private_key
+  value     = var.ssh_private_key
   sensitive = true
 }
 
 output "ubuntu_vm_public_key" {
-  value = local.ssh_public_key
+  value = var.ssh_public_key
 }
 
 resource "proxmox_virtual_environment_file" "cloud_config" {
