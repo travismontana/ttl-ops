@@ -14,11 +14,11 @@ steps:
         from_secret: sshPrivateKey
       SSHPUBKEY: 
         from_secret: sshPublicKey
-      AWSREGION:
+      AWS_REGION:
         from_secret: aws_region
-      AWSACCESSKEYID:
+      AWS_ACCESS_KEY_ID:
         from_secret: aws_access_key_id
-      AWSSECRETACCESSKEY:
+      AWS_SECRET_ACCESS_KEY:
         from_secret: aws_secret_access_key
       AWSVALS:
         from_secret: awsVals
