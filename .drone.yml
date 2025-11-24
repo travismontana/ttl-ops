@@ -8,12 +8,12 @@ steps:
     image: ghcr.io/opentofu/opentofu:latest
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
-      token: 
+      PROMOXTOKEN: 
         from_secret: proxmoxToken
     commands:
       - cd IaC/lab/code
       - tofu init
-      - tofu plan -var "clusterfile=$CLUSTERS_FILE"
+      - tofu plan -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN"
 
 trigger:
   event:
