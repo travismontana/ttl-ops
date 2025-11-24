@@ -10,6 +10,16 @@ steps:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
       PROMOXTOKEN: 
         from_secret: proxmoxToken
+      SSHPRIVKEY: 
+        from_secret: sshPrivateKey
+      SSHPUBKEY: 
+        from_secret: sshPublicKey
+      AWSREGION:
+        from_secret: aws_region
+      AWSACCESSKEYID:
+        from_secret: aws_access_key_id
+      AWSSECRETACCESSKEY:
+        from_secret: aws_secret_access_key
     commands:
       - cd IaC/lab/code
       - tofu init
