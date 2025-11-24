@@ -6,6 +6,9 @@ name: tofu-k3s
 steps:
   - name: buildvms
     image: ghcr.io/opentofu/opentofu:latest
+    volumes:
+      - name: terraform-cache
+        path: /terraform
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
       PROMOXTOKEN: 
@@ -21,7 +24,8 @@ steps:
       AWS_SECRET_ACCESS_KEY:
         from_secret: aws_secret_access_key
       AWSVALS:
-        from_secret: awsVals
+        from_secret: awsVals   
+      TF_PLUGIN_CACHE_DIR: /terraform    
     commands:
       - cd IaC/lab/code
       - tofu init
