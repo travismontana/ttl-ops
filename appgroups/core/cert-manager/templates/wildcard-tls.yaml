@@ -9,6 +9,4 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-  {{- range .Values.wildcard.dnsNames }}
-    - {{ . }}
-  {{- end }}
+{{ toYaml .Values.wildcard.dnsNames | indent 4 }}
