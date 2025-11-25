@@ -83,18 +83,6 @@
           metadata:
             name: argocd
 
-
-    - name: Parse AWS credentials
-      when: is_node0
-      set_fact:
-        aws_creds_lines: "{{ (aws_creds_file.content | b64decode).split('\n') }}"
-
-    - name: Extract AWS keys
-      when: is_node0
-      set_fact:
-        aws_access_key: "{{ aws_creds_lines | select('match', '^AWS_ACCESS_KEY_ID=') | first | regex_replace('^AWS_ACCESS_KEY_ID=', '') }}"
-        aws_secret_key: "{{ aws_creds_lines | select('match', '^AWS_SECRET_ACCESS_KEY=') | first | regex_replace('^AWS_SECRET_ACCESS_KEY=', '') }}"
-
     - name: Ensure external-dns namespace exists
       when: is_node0
       shell: |
