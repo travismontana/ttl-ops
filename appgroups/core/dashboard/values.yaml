@@ -7,9 +7,6 @@ kubernetes-dashboard:
       ingressClassName: traefik
       hosts:
         - host: "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
-          paths:
-            - /dashboard
+      path: /dashboard
       tls:
         - secretName: wildcard-tls
-          hosts:
-            - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
