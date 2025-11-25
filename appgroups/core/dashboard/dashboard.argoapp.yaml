@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubernetes-dashboard
+  name: {{ .Values.clusterName }}-kubernetes-dashboard
   namespace: argocd
 spec:
   project: default
