@@ -28,14 +28,7 @@ steps:
       TF_PLUGIN_CACHE_DIR: /terraform
       DELETE: ${DELETE}
     commands:
-      - |
-        if [ "$DELETE" = "true" ]; then;
-          echo "DELETE=true, proceeding with destroy...";
-          cd IaC/lab/code;
-          tofu init;
-          tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS";
-        fi
-
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, destroying..."; cd IaC/lab/code; tofu init; tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"; exit 0; fi'
 trigger:
   event:
     - custom
@@ -75,11 +68,7 @@ steps:
       TF_PLUGIN_CACHE_DIR: /terraform
       DELETE: ${DELETE} 
     commands:
-      - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, skipping ansible-k3s..."
-          exit 0
-        fi
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, skipping ansible-k3s..."; exit 0; fi' 
       - cd IaC/lab/code
       - tofu init
       - tofu plan -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
@@ -117,11 +106,7 @@ steps:
         from_secret: sshPrivateKey
       DELETE: ${DELETE} 
     commands:
-      - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, skipping ansible-k3s..."
-          exit 0
-        fi
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, skipping ansible-k3s..."; exit 0; fi' 
       - pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
@@ -168,11 +153,7 @@ steps:
         from_secret: sshPrivateKey
       DELETE: ${DELETE} 
     commands:
-      - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, skipping ansible-k3s..."
-          exit 0
-        fi
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, skipping ansible-k3s..."; exit 0; fi' 
       - pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
@@ -208,11 +189,7 @@ steps:
         from_secret: sshPrivateKey
       DELETE: ${DELETE}
     commands:
-      - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, skipping ansible-k3s..."
-          exit 0
-        fi
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, skipping ansible-k3s..."; exit 0; fi' 
       - #pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
