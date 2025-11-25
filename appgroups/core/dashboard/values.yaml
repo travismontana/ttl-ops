@@ -5,7 +5,7 @@ kubernetes-dashboard:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - "$argo{cluster-name}.abode.tailandtraillabs.org"
+        - "{{ .Values.clusterName}}.abode.tailandtraillabs.org"
       path: /dashboard
       issuer:
         name: cluster-issuer
