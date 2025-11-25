@@ -59,6 +59,7 @@ steps:
     image: python:3.11
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      PIP_CACHE_DIR: /pip-cache
       SSHPRIVKEY: 
         from_secret: sshPrivateKey
     commands:
@@ -74,6 +75,11 @@ trigger:
   event:
     - custom
 
+volumes:
+  - name: pip-cache
+    host:
+      path: /pip
+
 ---
 kind: pipeline
 type: docker
@@ -85,8 +91,12 @@ depends_on:
 steps:
   - name: install-argo
     image: python:3.11
+    volumes:
+      - name: pip-cache
+        path: /pip-cache
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      PIP_CACHE_DIR: /pip-cache
     commands:
       - pip install ansible
       - cd IaC/ansible
@@ -99,6 +109,11 @@ steps:
 trigger:
   event:
     - custom
+
+volumes:
+  - name: pip-cache
+    host:
+      path: /pip
 
 ---
 kind: pipeline
@@ -113,6 +128,7 @@ steps:
     image: python:3.11
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      PIP_CACHE_DIR: /pip-cache
     commands:
       - pip install ansible
       - cd IaC/ansible
@@ -126,3 +142,8 @@ steps:
 trigger:
   event:
     - custom
+
+volumes:
+  - name: pip-cache
+    host:
+      path: /pip
