@@ -28,7 +28,8 @@ steps:
       TF_PLUGIN_CACHE_DIR: /terraform
       DELETE: ${DELETE}
     commands:
-      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, destroying..."; cd IaC/lab/code; tofu init; tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"; exit 0; fi'
+      - cd IaC/lab/code
+      - sh -c 'if [ "$DELETE" = "true" ]; then echo "DELETE=true, destroying..."; cd IaC/lab/code; tofu init; tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"; fi'
 trigger:
   event:
     - custom
