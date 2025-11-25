@@ -140,7 +140,7 @@ steps:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
       PIP_CACHE_DIR: /pip-cache
     commands:
-      - pip install ansible
+      - #pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
       - echo "$SSHPRIVKEY" > /tmp/id_ed25519
