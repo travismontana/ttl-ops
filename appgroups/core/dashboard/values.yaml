@@ -1,4 +1,3 @@
-clusterName: ""  # Will be overridden
 kubernetes-dashboard:
   app:
     enabled: true
