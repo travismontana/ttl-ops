@@ -97,6 +97,8 @@ steps:
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
       PIP_CACHE_DIR: /pip-cache
+      SSHPRIVKEY: 
+        from_secret: sshPrivateKey
     commands:
       - pip install ansible
       - cd IaC/ansible

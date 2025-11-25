@@ -164,40 +164,6 @@
       shell: |
         kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml   
     
-    - name: Creat /dataz
-      when: is_node0
-      file:
-        path: /dataz
-        state: directory
-    - name: install packages
-      when: is_node0
-      package:
-        name: nfs-common
-        state: present
-        update_cache: yes
-    - name: fstab
-      when: is_node0
-      lineinfile:
-        path: /etc/fstab
-        line: "danas.hangar.bpfx.org:/volume1/dataz /dataz nfs defaults 0 0"
-        state: present
-    - name: mount
-      when: is_node0
-      shell: |
-        mount -a
 
-    - name: Copy and modify kubeconfig to NAS
-      when: is_node0
-      block:
-        - name: Read k3s kubeconfig
-          slurp:
-            src: /etc/rancher/k3s/k3s.yaml
-          register: kubeconfig_content
-
-        - name: Write modified kubeconfig to NAS
-          copy:
-            content: "{{ (kubeconfig_content.content | b64decode) | regex_replace('127.0.0.1:6443', cluster_name + '-node0.' + domainname + ':6443') }}"
-            dest: /dataz/kube/k3s-{{ cluster_name }}-config.yaml
-            mode: '0644'
 
 
