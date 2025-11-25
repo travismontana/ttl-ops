@@ -114,7 +114,7 @@ steps:
       - echo "$SSHPRIVKEY" > /tmp/id_ed25519
       - chmod 600 /tmp/id_ed25519
       - ssh-add /tmp/id_ed25519
-      - ansible-playbook k3s_initial_appload.yaml -e "clusters_file=$CLUSTERS_FILE"
+      - ansible-playbook k3s_initial_appload.yaml -e "clusters_file=$CLUSTERS_FILE" -e "aws_access_key=$AWS_ACCESS_KEY_ID" -e "aws_secret_key=$AWS_SECRET_ACCESS_KEY"
 
 trigger:
   event:
