@@ -33,10 +33,6 @@ spec:
           parameters:
             - name: clusterName
               value: '{{.name}}'
-            - name: kubernetes-dashboard.app.ingress.hosts[0].host
-              value: '{{.name}}.abode.tailandtraillabs.org'
-            - name: kubernetes-dashboard.app.ingress.tls.hosts[0]
-              value: '{{.name}}.abode.tailandtraillabs.org'
       syncPolicy:
         automated:
           prune: true
