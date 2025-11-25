@@ -8,5 +8,7 @@ kubernetes-dashboard:
       hosts:
         - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
       path: /dashboard
+      issuer:
+        name: cluster-issuer
       tls:
        secretName: wildcard-tls
