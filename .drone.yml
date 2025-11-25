@@ -1,6 +1,54 @@
 ---
 kind: pipeline
 type: docker
+name: tofu-destroy
+
+steps:
+  - name: destroy-vms
+    image: ghcr.io/opentofu/opentofu:latest
+    volumes:
+      - name: terraform-cache
+        path: /terraform
+    environment:
+      CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      PROMOXTOKEN: 
+        from_secret: proxmoxToken
+      SSHPRIVKEY: 
+        from_secret: sshPrivateKey
+      SSHPUBKEY: 
+        from_secret: sshPublicKey
+      AWS_REGION:
+        from_secret: aws_region
+      AWS_ACCESS_KEY_ID:
+        from_secret: aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: aws_secret_access_key
+      AWSVALS:
+        from_secret: awsVals   
+      TF_PLUGIN_CACHE_DIR: /terraform
+      DELETE: ${DELETE}
+    commands:
+      - |
+        if [ "$DELETE" = "true" ]; then
+          echo "DELETE=true, proceeding with destroy..."
+          cd IaC/lab/code
+          tofu init
+          tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
+          exit 0
+        fi
+
+trigger:
+  event:
+    - custom
+
+volumes:
+  - name: terraform-cache
+    host:
+      path: /terraform
+
+---
+kind: pipeline
+type: docker
 name: tofu-k3s
 
 steps:
@@ -25,8 +73,14 @@ steps:
         from_secret: aws_secret_access_key
       AWSVALS:
         from_secret: awsVals   
-      TF_PLUGIN_CACHE_DIR: /terraform    
+      TF_PLUGIN_CACHE_DIR: /terraform
+      DELETE: ${DELETE} 
     commands:
+      - |
+        if [ "$DELETE" = "true" ]; then
+          echo "DELETE=true, skipping ansible-k3s..."
+          exit 0
+        fi
       - cd IaC/lab/code
       - tofu init
       - tofu plan -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
@@ -62,7 +116,13 @@ steps:
       PIP_CACHE_DIR: /pip-cache
       SSHPRIVKEY: 
         from_secret: sshPrivateKey
+      DELETE: ${DELETE} 
     commands:
+      - |
+        if [ "$DELETE" = "true" ]; then
+          echo "DELETE=true, skipping ansible-k3s..."
+          exit 0
+        fi
       - pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
@@ -107,7 +167,13 @@ steps:
         from_secret: aws_region
       SSHPRIVKEY: 
         from_secret: sshPrivateKey
+      DELETE: ${DELETE} 
     commands:
+      - |
+        if [ "$DELETE" = "true" ]; then
+          echo "DELETE=true, skipping ansible-k3s..."
+          exit 0
+        fi
       - pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
@@ -141,7 +207,13 @@ steps:
       PIP_CACHE_DIR: /pip-cache
       SSHPRIVKEY: 
         from_secret: sshPrivateKey
+      DELETE: ${DELETE}
     commands:
+      - |
+        if [ "$DELETE" = "true" ]; then
+          echo "DELETE=true, skipping ansible-k3s..."
+          exit 0
+        fi
       - #pip install ansible
       - cd IaC/ansible
       - eval $(ssh-agent -s)
@@ -161,52 +233,3 @@ volumes:
       path: /pip
 
 
----
-kind: pipeline
-type: docker
-name: tofu-destroy
-
-steps:
-  - name: destroy-vms
-    image: ghcr.io/opentofu/opentofu:latest
-    volumes:
-      - name: terraform-cache
-        path: /terraform
-    environment:
-      CLUSTERS_FILE: /drone/src/platforms/clusters.json
-      PROMOXTOKEN: 
-        from_secret: proxmoxToken
-      SSHPRIVKEY: 
-        from_secret: sshPrivateKey
-      SSHPUBKEY: 
-        from_secret: sshPublicKey
-      AWS_REGION:
-        from_secret: aws_region
-      AWS_ACCESS_KEY_ID:
-        from_secret: aws_access_key_id
-      AWS_SECRET_ACCESS_KEY:
-        from_secret: aws_secret_access_key
-      AWSVALS:
-        from_secret: awsVals   
-      TF_PLUGIN_CACHE_DIR: /terraform
-      DELETE: ${DELETE}
-    commands:
-      - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, proceeding with destroy..."
-          cd IaC/lab/code
-          tofu init
-          tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
-        else
-          echo "DELETE not set to true, skipping destroy. Set DELETE=true to proceed."
-          exit 1
-        fi
-
-trigger:
-  event:
-    - custom
-
-volumes:
-  - name: terraform-cache
-    host:
-      path: /terraform
