@@ -59,6 +59,8 @@ steps:
     image: python:3.11
     environment:
       CLUSTERS_FILE: /drone/src/platforms/clusters.json
+      SSHPRIVKEY: 
+        from_secret: sshPrivateKey
     commands:
       - pip install ansible
       - cd IaC/ansible
