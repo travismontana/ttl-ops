@@ -29,12 +29,11 @@ steps:
       DELETE: ${DELETE}
     commands:
       - |
-        if [ "$DELETE" = "true" ]; then
-          echo "DELETE=true, proceeding with destroy..."
-          cd IaC/lab/code
-          tofu init
-          tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
-          exit 0
+        if [ "$DELETE" = "true" ]; then;
+          echo "DELETE=true, proceeding with destroy...";
+          cd IaC/lab/code;
+          tofu init;
+          tofu destroy -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS";
         fi
 
 trigger:
