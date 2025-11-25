@@ -8,6 +8,11 @@ terraform {
             version = "~> 5.0"
         }
     }
+    backend "s3coralbuffalo" {
+        bucket = "ttl-ops-terraform-state"
+        key    = "lab/terraform.tfstate"
+        region = "us-east-2"
+    }
 }
 
 provider "aws" {
