@@ -29,12 +29,6 @@ spec:
         repoURL: https://github.com/travismontana/ttl-ops
         targetRevision: HEAD
         path: 'appgroups/core/{{.path.basename}}'
-        helm:
-          parameters:
-            - name: clusterName
-              value: '{{.name}}'
-          valueFiles:
-            - $values/appgroups/core/{{.path.basename}}/values.yaml
       syncPolicy:
         automated:
           prune: true

@@ -14,8 +14,9 @@ spec:
     targetRevision: v1.19.1
     helm:
       parameters: []
-      valueFiles:
-        - values.yaml
+      values: |
+        crds:
+          enabled: true
   syncPolicy:
     automated:
       prune: true

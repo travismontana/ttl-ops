@@ -14,8 +14,6 @@ spec:
     targetRevision: 9.1.39
     helm:
       parameters: []
-      valueFiles:
-        - values.yaml
   syncPolicy:
     automated:
       prune: true

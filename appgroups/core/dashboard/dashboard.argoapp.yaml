@@ -14,8 +14,21 @@ spec:
     targetRevision: 7.14.0
     helm:
       parameters: []
-      valueFiles:
-        - values.yaml
+      Values: |
+        clusterName: ""  # Will be overridden
+        app:
+          enabled: true
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            hosts:
+              - host: "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+                paths:
+                  - /dashboard
+            tls:
+              - secretName: wildcard-tls
+                hosts:
+                  - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
   syncPolicy:
     automated:
       prune: true
