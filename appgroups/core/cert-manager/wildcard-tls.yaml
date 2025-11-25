@@ -4,6 +4,7 @@ metadata:
   name: wildcard-tls
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: ServerSideApply=true
   namespace: cert-manager  # Or whatever namespace you want
 spec:
   secretName: wildcard-tls

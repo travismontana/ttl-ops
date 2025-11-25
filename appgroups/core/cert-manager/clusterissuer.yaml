@@ -4,6 +4,7 @@ metadata:
   name: letsencrypt-prod
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-options: ServerSideApply=true
 spec:
   acme:
     # Let's Encrypt production server
