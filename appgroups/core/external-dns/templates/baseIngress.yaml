@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: base-ingress
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: $argo{cluster-name}.abode.tailandtraillabs.org
+spec:
+  ingressClassName: traefik
+  tls:
+    - secretName: wildcard-tls
+      hosts:
+        - $argo{cluster-name}.abode.tailandtraillabs.org
+  rules:
+    - host: $argo{cluster-name}.abode.tailandtraillabs.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik  # Or any default service
+                port:
+                  number: 80
