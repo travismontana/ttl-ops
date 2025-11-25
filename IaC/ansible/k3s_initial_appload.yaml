@@ -83,12 +83,6 @@
           metadata:
             name: argocd
 
-    - name: Read AWS credentials file
-      when: is_node0
-      slurp:
-        src: /home/bob/.a/aws_key
-      delegate_to: localhost
-      register: aws_creds_file
 
     - name: Parse AWS credentials
       when: is_node0
