@@ -1,15 +1,15 @@
 clusterName: ""  # Will be overridden
-
-app:
-  enabled: true
-  ingress:
+kubernetes-dashboard:
+  app:
     enabled: true
-    ingressClassName: traefik
-    hosts:
-      - host: "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
-        paths:
-          - /dashboard
-    tls:
-      - secretName: wildcard-tls
-        hosts:
-          - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - host: "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+          paths:
+            - /dashboard
+      tls:
+        - secretName: wildcard-tls
+          hosts:
+            - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"

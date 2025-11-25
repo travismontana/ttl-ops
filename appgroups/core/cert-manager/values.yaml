@@ -1,2 +1,15 @@
-crds:
-  enabled: true
+# Values for cert-manager dependency
+cert-manager:
+  crds:
+    enabled: true
+
+# Your custom values
+clusterIssuer:
+  email: bob@bomar.us  # Update this
+  server: https://acme-v02.api.letsencrypt.org/directory
+
+wildcard:
+  domain: "*.abode.tailandtraillabs.org"
+  dnsNames:
+    - "*.abode.tailandtraillabs.org"
+    - "abode.tailandtraillabs.org"
