@@ -5,6 +5,7 @@ external-dns:
   txtOwnerId: ttl-ops
   domainFilters:
     - tailandtraillabs.com
+    - tailandtraillabs.org
   policy: sync  # Creates & deletes records
   sources:
     - ingress
