@@ -34,6 +34,7 @@
         appgroups: "{{ item.0.appgroups }}"
         k3s_version: "v1.34.1+k3s1"
         k3s_token: "N2260mN2260m"
+        k3sargs : "--node-label clustername={{ cluster_name }} --node-label domainname={{ domainname }}"
       loop: "{{ clusters_data.cluster | product(range(0, 10)) | list }}"
       when: item.1 < item.0.numnodes
 
@@ -50,7 +51,7 @@
         K3S_KUBECONFIG_MODE: "644"
         INSTALL_K3S_VERSION: "{{ k3s_version }}"
         #INSTALL_K3S_EXEC: "server --cluster-init --tls-san {{ ansible_host }} --node-name {{ inventory_hostname }} --node-label appgroup={{ appgroups }} --node-label clustername={{ cluster_name }}"
-        INSTALL_K3S_EXEC: "server --cluster-init --tls-san {{ ansible_host }} --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} --node-label clustername={{ cluster_name }}"
+        INSTALL_K3S_EXEC: "server --cluster-init --tls-san {{ ansible_host }} --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} {{ k3sargs }}"
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
         curl -sfL https://get.k3s.io | sh -
@@ -63,7 +64,7 @@
         K3S_KUBECONFIG_MODE: "644"
         INSTALL_K3S_VERSION: "{{ k3s_version }}"
         #INSTALL_K3S_EXEC: "agent --node-name {{ inventory_hostname }}"
-        INSTALL_K3S_EXEC: "agent --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} --node-label clustername={{ cluster_name }}"
+        INSTALL_K3S_EXEC: "agent --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} {{ k3sargs }}"
         K3S_TOKEN: "{{ k3s_token }}"
         K3S_URL: "https://{{ cluster_name }}-node0.{{ domainname }}:6443"
       shell: |

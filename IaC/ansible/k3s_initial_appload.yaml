@@ -149,7 +149,8 @@
         kubectl label secret cluster-in-cluster \
           -n argocd \
           argocd.argoproj.io/secret-type=cluster \
-          cluster-name="{{ cluster_name }}" \
+          clustername="{{ cluster_name }}" \
+          domainname="{{ domainname }}" \
           --overwrite
     
     - name: Install the core app

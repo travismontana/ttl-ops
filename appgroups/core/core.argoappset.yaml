@@ -32,7 +32,9 @@ spec:
         helm:
           parameters:
             - name: clusterName
-              value: '{{ index .metadata.labels "cluster-name" }}'
+              value: '{{ index .metadata.labels "clustername" }}'
+            - name: domainName
+              value: '{{ index .metadata.labels "domainname" }}'
       syncPolicy:
         automated:
           prune: true

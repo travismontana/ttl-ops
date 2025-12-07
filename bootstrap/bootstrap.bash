@@ -13,6 +13,9 @@ REPO_DIR=""
 SECTION="all"
 CLUSTER_FILE=""
 DRY_RUN=false
+TOFU_VARS=()
+TOFU_VAR_FILES=()
+DEFAULT_VAR_FILE="$HOME/.a/proxmoxapi.tfvars"
 
 log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
@@ -51,6 +54,11 @@ OPTIONS:
                        Default: current directory ($PWD)
   --repo-dir DIR       Directory for git repository
                        Default: \$WORK_DIR/ttl-ops
+  --tofu-var KEY=VALUE Pass variables to Tofu (can be used multiple times)
+                       Example: --tofu-var token=USER@REALM!TOKENID=SECRET
+  --tofu-var-file FILE Path to Tofu variables file
+                       Default: $DEFAULT_VAR_FILE (if it exists)
+                       Example: --tofu-var-file /path/to/vars.tfvars
   --dry-run            Show what would be done without executing
   -h, --help           Show this help message
 
@@ -64,20 +72,23 @@ SECTIONS:
   all                 Run all sections in order (git, tofu, k3sinstall, appgroupinstall)
 
 EXAMPLES:
-  # Use default clusters.json from repo
+  # Use default clusters.json and default var file (~/.a/proxmoxapi.tfvars)
   $0
 
   # Use specific cluster file from repo
   $0 IaC/prod/clusters.json
 
-  # Use absolute path
-  $0 /tmp/test-clusters.json
+  # Use custom var file
+  $0 --tofu-var-file /path/to/prod.tfvars clusters.json
+
+  # Override with CLI variable
+  $0 --tofu-var token="root@pam!mytoken=secret" clusters.json
 
   # Custom work directory
   $0 --work-dir /tmp/bootstrap
 
-  # Dry run with custom cluster file
-  $0 --dry-run IaC/staging/clusters.json
+  # Dry run
+  $0 --dry-run
 
   # Just clone/update repo
   $0 --section git
@@ -104,6 +115,14 @@ while [[ $# -gt 0 ]]; do
             REPO_DIR="$2"
             shift 2
             ;;
+        --tofu-var)
+            TOFU_VARS+=("-var=$2")
+            shift 2
+            ;;
+        --tofu-var-file)
+            TOFU_VAR_FILES+=("-var-file=$2")
+            shift 2
+            ;;
         --dry-run)
             DRY_RUN=true
             shift
@@ -117,6 +136,12 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Auto-load default var file if it exists and no var files specified
+if [[ ${#TOFU_VAR_FILES[@]} -eq 0 && -f "$DEFAULT_VAR_FILE" ]]; then
+    log "Auto-loading default var file: $DEFAULT_VAR_FILE"
+    TOFU_VAR_FILES+=("-var-file=$DEFAULT_VAR_FILE")
+fi
 
 # Set defaults if not provided
 [[ -z "$REPO_DIR" ]] && REPO_DIR="${WORK_DIR}/ttl-ops"
@@ -138,6 +163,25 @@ if [[ "$DRY_RUN" == "false" && "$SECTION" != "destroy" ]]; then
     mkdir -p "$WORK_DIR"
     mkdir -p "$TEMP_DIR"
 fi
+
+check_ssh_agent() {
+    log "Checking SSH agent..."
+    
+    # Check if ssh-agent is running
+    if [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
+        log "SSH agent not running, starting..."
+        eval "$(ssh-agent -s)"
+    fi
+    
+    # Check if key is loaded
+    if ! ssh-add -L &>/dev/null; then
+        log "No SSH keys loaded, adding default key..."
+        ssh-add "$HOME/.ssh/id_ed25519" || error "Failed to add SSH key to agent"
+    fi
+    
+    log "SSH agent ready with keys:"
+    ssh-add -L | awk '{print "  - " $NF}'
+}
 
 # Handle cluster file path
 resolve_cluster_file() {
@@ -179,6 +223,8 @@ log "  Tofu directory: $TOFU_DIR"
 log "  Ansible directory: $ANSIBLE_DIR"
 log "  Temp directory: $TEMP_DIR"
 log "  Section: $SECTION"
+[[ ${#TOFU_VARS[@]} -gt 0 ]] && log "  Tofu vars: ${#TOFU_VARS[@]} variable(s) provided"
+[[ ${#TOFU_VAR_FILES[@]} -gt 0 ]] && log "  Tofu var files: ${#TOFU_VAR_FILES[@]} file(s) loaded"
 log ""
 
 # Section: git
@@ -207,6 +253,7 @@ run_tofu() {
     log "=== Section: Tofu Infrastructure Provisioning ==="
     
     # Resolve cluster file path
+    check_ssh_agent
     resolve_cluster_file
     log "  Cluster file: $CLUSTER_FILE"
     
@@ -231,10 +278,12 @@ run_tofu() {
     PLAN_FILE="${TEMP_DIR}/tfplan"
     
     if [[ "$DRY_RUN" == "true" ]]; then
-        run_cmd tofu plan -var="clusterfile=$CLUSTER_FILE"
+        run_cmd tofu plan -var="clusterfile=$CLUSTER_FILE" "${TOFU_VAR_FILES[@]}" "${TOFU_VARS[@]}"
     else
         run_cmd tofu plan \
             -var="clusterfile=$CLUSTER_FILE" \
+            "${TOFU_VAR_FILES[@]}" \
+            "${TOFU_VARS[@]}" \
             -out="$PLAN_FILE"
         
         log "Applying infrastructure..."
@@ -251,7 +300,7 @@ run_tofu() {
 }
 
 # Section: k3sinstall (includes argoinstall since it's in the same playbook)
-run_k3sinstall() {
+run_k3sinstaller() {
     log "=== Section: K3s Installation ==="
     
     # Resolve cluster file path
@@ -272,6 +321,43 @@ run_k3sinstall() {
     cd "$ANSIBLE_DIR"
     
     if [[ "$DRY_RUN" == "true" ]]; then
+        run_cmd ansible-playbook k3s_main.yaml \
+            -e "clusters_file=$CLUSTER_FILE" \
+            -e "aws_access_key=REDACTED" \
+            -e "aws_secret_key=REDACTED" \
+            --check
+    else
+        run_cmd ansible-playbook k3s_main.yaml \
+            -e "clusters_file=$CLUSTER_FILE" \
+            -e "aws_access_key=$AWS_ACCESS_KEY" \
+            -e "aws_secret_key=$AWS_SECRET_KEY"
+    fi
+    
+    log "K3s installation complete"
+}
+
+# Section: k3sinstall (includes argoinstall since it's in the same playbook)
+run_argoinstaller() {
+    log "=== Section: Argo Installation ==="
+    
+    # Resolve cluster file path
+    resolve_cluster_file
+    log "  Cluster file: $CLUSTER_FILE"
+    
+    # Validate repository exists
+    [[ -d "$ANSIBLE_DIR" ]] || error "Ansible directory not found: $ANSIBLE_DIR (run --section git first)"
+    
+    # Parse AWS credentials for Ansible
+    AWS_ACCESS_KEY=$(awk -F'=' '/aws_access_key_id/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' ~/.aws/credentials | head -1)
+    AWS_SECRET_KEY=$(awk -F'=' '/aws_secret_access_key/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' ~/.aws/credentials | head -1)
+    
+    [[ -n "$AWS_ACCESS_KEY" ]] || error "Could not parse AWS access key from credentials file"
+    [[ -n "$AWS_SECRET_KEY" ]] || error "Could not parse AWS secret key from credentials file"
+    
+    log "Running Ansible playbook for ArgoCD..."
+    cd "$ANSIBLE_DIR"
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
         run_cmd ansible-playbook k3s_initial_appload.yaml \
             -e "clusters_file=$CLUSTER_FILE" \
             -e "aws_access_key=REDACTED" \
@@ -288,10 +374,17 @@ run_k3sinstall() {
 }
 
 # Section: argoinstall (separate entry point, but runs k3sinstall since they're together)
+run_k3sinstall() {
+    log "=== Section: ArgoCD Installation ==="
+    log "Note: ArgoCD is installed as part of k3s playbook"
+    run_k3sinstaller
+}
+
+# Section: argoinstall (separate entry point, but runs k3sinstall since they're together)
 run_argoinstall() {
     log "=== Section: ArgoCD Installation ==="
     log "Note: ArgoCD is installed as part of k3s playbook"
-    run_k3sinstall
+    run_argoinstaller
 }
 
 # Section: appgroupinstall
@@ -351,12 +444,12 @@ run_destroy() {
     
     log "Planning infrastructure destruction..."
     if [[ "$DRY_RUN" == "true" ]]; then
-        run_cmd tofu plan -destroy -var="clusterfile=$CLUSTER_FILE"
+        run_cmd tofu plan -destroy -var="clusterfile=$CLUSTER_FILE" "${TOFU_VAR_FILES[@]}" "${TOFU_VARS[@]}"
     else
         log "WARNING: This will destroy all infrastructure defined in $CLUSTER_FILE"
         read -p "Are you sure? Type 'yes' to continue: " -r
         if [[ $REPLY == "yes" ]]; then
-            run_cmd tofu destroy -var="clusterfile=$CLUSTER_FILE" -auto-approve
+            run_cmd tofu destroy -var="clusterfile=$CLUSTER_FILE" "${TOFU_VAR_FILES[@]}" "${TOFU_VARS[@]}" -auto-approve
             log "Infrastructure destroyed"
         else
             log "Destroy cancelled"
@@ -375,6 +468,7 @@ run_all() {
     log "  Cluster file: $CLUSTER_FILE"
     run_tofu
     run_k3sinstall
+    run_argoinstall
     run_appgroupinstall
 }
 
