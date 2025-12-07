@@ -31,6 +31,7 @@
         is_control_node: "{{ item.1 < item.0.numCnodes }}"
         is_first_control: "{{ item.1 == 0 }}"
         total_nodes: "{{ item.0.numCnodes + item.0.numWnodes }}"
+        cluster_total_nodes: "{{ item.0.numCnodes + item.0.numWnodes }}"
         num_control: "{{ item.0.numCnodes }}"          # ← ADD THIS LINE
         num_worker: "{{ item.0.numWnodes }}"
         site: "{{ item.0.site }}"
