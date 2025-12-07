@@ -10,4 +10,5 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-{{ toYaml .Values.wildcard.dnsNames | indent 4 }}
+    - "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+    - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"

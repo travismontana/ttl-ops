@@ -11,5 +11,3 @@ clusterIssuer:
 wildcard:
   domain: "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
   dnsNames:
-    - "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
-    - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
