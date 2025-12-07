@@ -1,7 +1,7 @@
 terraform {
     required_providers {
         proxmox = {
-        source  = "bpg/proxmox"
+            source  = "bpg/proxmox"
         }
         aws = {
             source  = "hashicorp/aws"
@@ -16,16 +16,15 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-2"  # or wherever your Route53 is
-  # Uses AWS credentials from environment or ~/.aws/credentials
+    region = "us-east-2"
 }
 
 provider "proxmox" {
-    endpoint = "https://intrepid.abode.tailandtraillabs.org:8006"
+    endpoint  = "https://intrepid.abode.tailandtraillabs.org:8006"
     api_token = var.token
-    insecure = true
+    insecure  = true
     ssh {
-        agent = true
+        agent    = true
         username = "root"
     }
 }
@@ -38,25 +37,25 @@ variable "clusterfile" {
 
 variable "token" {
     description = "Proxmox API token in the format 'USER@REALM!TOKENID=SECRET'"
-  
+    type        = string
 }
 
-variable ssh_public_key {
-  description = "Path to SSH public key"
-  type        = string
-  default     = "/home/bob/.ssh/id_ed25519.pub"
+variable "ssh_public_key" {
+    description = "Path to SSH public key"
+    type        = string
+    default     = "/home/bob/.ssh/id_ed25519.pub"
 }
 
-variable ssh_private_key {
-  description = "Path to SSH private key"
-  type        = string
-  default     = "/home/bob/.ssh/id_ed25519"
+variable "ssh_private_key" {
+    description = "Path to SSH private key"
+    type        = string
+    default     = "/home/bob/.ssh/id_ed25519"
 }
 
-variable aws_credentials {
-  description = "Path to AWS credentials file"
-  type        = string
-  default     = "/home/bob/.aws/credentials"
+variable "aws_credentials" {
+    description = "Path to AWS credentials file"
+    type        = string
+    default     = "/home/bob/.aws/credentials"
 }
 
 locals {
@@ -64,10 +63,15 @@ locals {
 }
 
 module "vms" {
-    source = "./modules/vm"
+    source = "../../modules/vm"
 
     for_each = { for cluster in local.clusters_data.cluster : cluster.name => cluster }
-    cluster_name        = each.key
-    cluster_numnodes    = each.value.numnodes
-    appgroups       = each.value.appgroups
+    
+    cluster_name          = each.value.name
+    cluster_control_nodes = each.value.numCnodes
+    cluster_worker_nodes  = each.value.numWnodes
+    appgroups            = each.value.appgroups
+    ssh_public_key       = var.ssh_public_key
+    ssh_private_key      = var.ssh_private_key
+    aws_credentials      = var.aws_credentials
 }

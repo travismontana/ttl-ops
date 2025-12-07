@@ -1,6 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# Enable debug mode if DEBUG env var is set
+DEBUG="${DEBUG:-false}"
+if [[ "$DEBUG" == "true" ]]; then
+    set -x
+    echo "[DEBUG MODE ENABLED]"
+fi
+
 # Bootstrap script for k3s cluster deployment
 # Usage: ./bootstrap.sh [OPTIONS] [cluster-file]
 
@@ -49,10 +56,11 @@ ARGUMENTS:
                          /tmp/test.json         -> /tmp/test.json (absolute path)
 
 OPTIONS:
+  --debug              Enable debug mode (set -x for bash tracing)
   --section SECTION    Run specific section: git|tofu|k3sinstall|argoinstall|appgroupinstall|destroy|all
                        Default: all
   --work-dir DIR       Working directory for all operations
-                       Default: current directory ($PWD)
+                       Default: temporary directory (/tmp/bootstrap.XXXXXXX)
   --repo-dir DIR       Directory for git repository
                        Default: \$WORK_DIR/ttl-ops
   --tofu-var KEY=VALUE Pass variables to Tofu (can be used multiple times)
@@ -75,6 +83,11 @@ SECTIONS:
 EXAMPLES:
   # Use default clusters.json and default var file (~/.a/proxmoxapi.tfvars)
   $0
+
+  # Enable debug mode
+  DEBUG=true $0
+  # or
+  $0 --debug
 
   # Use specific cluster file from repo
   $0 IaC/prod/clusters.json
@@ -104,6 +117,11 @@ EOF
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
+        --debug)
+            DEBUG=true
+            set -x
+            shift
+            ;;
         --section)
             SECTION="$2"
             shift 2
@@ -224,6 +242,7 @@ log "  Tofu directory: $TOFU_DIR"
 log "  Ansible directory: $ANSIBLE_DIR"
 log "  Temp directory: $TEMP_DIR"
 log "  Section: $SECTION"
+log "  Debug mode: $DEBUG"
 [[ ${#TOFU_VARS[@]} -gt 0 ]] && log "  Tofu vars: ${#TOFU_VARS[@]} variable(s) provided"
 [[ ${#TOFU_VAR_FILES[@]} -gt 0 ]] && log "  Tofu var files: ${#TOFU_VAR_FILES[@]} file(s) loaded"
 log ""
@@ -520,5 +539,7 @@ if [[ "$SECTION" != "destroy" && "$SECTION" != "git" && "$DRY_RUN" == "false" ]]
     log "  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${FIRST_CLUSTER}-node0.${DOMAIN} 'kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath={.data.password} | base64 -d'"
 fi
 
-# At the end of your script
-trap 'rm -rf "$WORK_DIR"' EXIT
+# Cleanup temp work directory on exit
+if [[ "$WORK_DIR" == /tmp/bootstrap.* ]]; then
+    trap 'rm -rf "$WORK_DIR"' EXIT
+fi
