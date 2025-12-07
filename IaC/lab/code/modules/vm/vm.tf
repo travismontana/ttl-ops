@@ -55,6 +55,11 @@ variable "aws_credentials" {
   default     = "/home/bob/.aws/credentials"
 }
 
+variable "domainname" {
+  description = "Domain name for the cluster"
+  type        = string
+}
+
 locals {
   total_nodes = var.cluster_control_nodes + var.cluster_worker_nodes
   
@@ -228,7 +233,7 @@ data "aws_route53_zone" "main" {
 resource "aws_route53_record" "cluster_nodes" {
   count   = local.total_nodes
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "${var.cluster_name}-node${count.index}.tailandtraillabs.org"
+  name    = "${var.cluster_name}-node${count.index}.${var.domainname}"
   type    = "A"
   ttl     = 300
   records = [proxmox_virtual_environment_vm.cluster_vms[count.index].ipv4_addresses[1][0]]

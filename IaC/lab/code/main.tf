@@ -74,4 +74,5 @@ module "vms" {
     ssh_public_key       = var.ssh_public_key
     ssh_private_key      = var.ssh_private_key
     aws_credentials      = var.aws_credentials
+    domainname           = local.clusters_data.domainname
 }
