@@ -49,16 +49,6 @@
     - name: Validate cluster configuration
       when: is_first_control
       block:
-        - name: Read cluster config for validation
-          set_fact:
-            cluster_config: "{{ clusters_data.cluster | selectattr('name', 'equalto', cluster_name) | first }}"
-        
-        - name: Get node counts
-          set_fact:
-            num_control: "{{ cluster_config.numCnodes | int }}"
-            num_worker: "{{ cluster_config.numWnodes | int }}"
-            cluster_total_nodes: "{{ (cluster_config.numCnodes | int) + (cluster_config.numWnodes | int) }}"
-        
         - name: Validate minimum nodes
           assert:
             that:
