@@ -4,13 +4,13 @@ metadata:
   name: base-ingress-mainfest
   namespace: {{ .Release.Namespace }}
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: $argo{cluster-name}.abode.tailandtraillabs.org
+    external-dns.alpha.kubernetes.io/hostname: $argo{cluster-name}.tailandtraillabs.org
 spec:
   ingressClassName: traefik
   tls:
     - secretName: wildcard-tls
       hosts:
-        - $argo{cluster-name}.abode.tailandtraillabs.org
+        - $argo{cluster-name}.tailandtraillabs.org
   rules:
     - host: $argo{cluster-name}.abode.tailandtraillabs.org
       http:

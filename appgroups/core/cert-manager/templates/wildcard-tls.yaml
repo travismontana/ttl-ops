@@ -10,5 +10,5 @@ spec:
     name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
-    - "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
-    - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+    - "*.{{ .Values.clusterName }}.tailandtraillabs.org"
+    - "{{ .Values.clusterName }}.tailandtraillabs.org"

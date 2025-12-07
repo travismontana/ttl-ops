@@ -87,7 +87,7 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
       }
     }
     dns {
-      domain = "abode.tailandtraillabs.org"
+      domain = "tailandtraillabs.org"
     }
 
     user_data_file_id = proxmox_virtual_environment_file.cloud_config[count.index].id
@@ -210,8 +210,8 @@ data "aws_route53_zone" "main" {
 resource "aws_route53_record" "cluster_nodes" {
   count   = var.cluster_numnodes
   zone_id = data.aws_route53_zone.main.zone_id
-  #name    = "${local.vm_names[count.index]}.${var.cluster_name}.abode.abode.tailandtraillabs.org"
-  name    = "${var.cluster_name}-node${count.index}.abode.tailandtraillabs.org"
+  #name    = "${local.vm_names[count.index]}.${var.cluster_name}.tailandtraillabs.org"
+  name    = "${var.cluster_name}-node${count.index}.tailandtraillabs.org"
   type    = "A"
   ttl     = 300
   records = [proxmox_virtual_environment_vm.cluster_vms[count.index].ipv4_addresses[1][0]]  # [1][0] gets first IP of first interface (skipping loopback)
