@@ -109,8 +109,8 @@
           --from-literal=aws-access-key-id="{{ aws_access_key }}" \
           --from-literal=aws-secret-access-key="{{ aws_secret_key }}" \
           --dry-run=client -o yaml | kubectl apply -f -
-          environment:
-            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Install argocd
       when: is_node0
