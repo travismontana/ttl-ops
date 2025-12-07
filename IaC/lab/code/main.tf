@@ -63,7 +63,7 @@ locals {
 }
 
 module "vms" {
-    source = "../../modules/vm"
+    source = "modules/vm"
 
     for_each = { for cluster in local.clusters_data.cluster : cluster.name => cluster }
     
