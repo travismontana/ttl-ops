@@ -8,7 +8,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_URL="git@github.com:travismontana/ttl-ops.git"
 
 # Defaults
-WORK_DIR="${WORK_DIR:-$PWD}"
+DEFAULT_WORK_DIR=$(mktemp -d /tmp/bootstrap.XXXXXXX)
+WORK_DIR="${WORK_DIR:-$DEFAULT_WORK_DIR}"
 REPO_DIR=""
 SECTION="all"
 CLUSTER_FILE=""
@@ -518,3 +519,6 @@ if [[ "$SECTION" != "destroy" && "$SECTION" != "git" && "$DRY_RUN" == "false" ]]
     log "Get ArgoCD admin password:"
     log "  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${FIRST_CLUSTER}-node0.${DOMAIN} 'kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath={.data.password} | base64 -d'"
 fi
+
+# At the end of your script
+trap 'rm -rf "$WORK_DIR"' EXIT
