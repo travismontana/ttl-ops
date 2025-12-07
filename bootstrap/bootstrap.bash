@@ -314,6 +314,10 @@ run_tofu() {
         
         log "Waiting 30s for VMs to stabilize..."
         sleep 30
+
+        log "Flushing PiHole DNS cache..."
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null pi@172.16.2.23 "pihole restartdns reload" || log "Warning: Could not flush PiHole DNS"
+        sleep 5
     fi
     
     log "Tofu section complete"
