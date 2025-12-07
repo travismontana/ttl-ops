@@ -5,7 +5,8 @@
             "name": "pirate",
             "site": "lab",
             "owner": "ttl-ops",
-            "numnodes": 2,
+            "numCnodes": 1,
+            "numWnodes": 1,
             "appgroups": [
                 {
                     "pirate": true
@@ -16,7 +17,8 @@
             "name": "monitoring",
             "site": "lab",
             "owner": "ttl-ops",
-            "numnodes": 2,
+            "numCnodes": 1,
+            "numWnodes": 3,
             "appgroups": [
                 {
                     "monitoring": true

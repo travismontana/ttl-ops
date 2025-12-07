@@ -3,9 +3,26 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_numnodes" {
-  description = "Number of nodes in the Proxmox cluster"
+variable "cluster_control_nodes" {
+  description = "Number of control plane nodes (must be 1 or multiple of 3: 1, 3, 6, 9...)"
   type        = number
+  default     = 1
+  
+  validation {
+    condition     = var.cluster_control_nodes >= 1 && (var.cluster_control_nodes == 1 || var.cluster_control_nodes % 3 == 0)
+    error_message = "Control nodes must be 1 or a multiple of 3 (1, 3, 6, 9, etc.)."
+  }
+}
+
+variable "cluster_worker_nodes" {
+  description = "Number of worker nodes (must be 0, 1, or multiple of 3: 0, 1, 3, 6, 9...)"
+  type        = number
+  default     = 0
+  
+  validation {
+    condition     = var.cluster_worker_nodes >= 0 && (var.cluster_worker_nodes <= 1 || var.cluster_worker_nodes % 3 == 0)
+    error_message = "Worker nodes must be 0, 1, or a multiple of 3 (0, 1, 3, 6, 9, etc.)."
+  }
 }
 
 variable "proxmox_node" {
@@ -20,41 +37,61 @@ variable "appgroups" {
   default     = []
 }
 
-locals {
-  # Convert appgroups to k3s label format: --node-label appgroup.pirate=true
-  appgroup_labels = join(" ", [
-    for group in var.appgroups : 
-      join(" ", [
-        for key, value in group :
-          "--node-label appgroup.${key}=${value}"
-      ])
-  ])
+variable "ssh_public_key" {
+  description = "Path to SSH public key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519.pub"
 }
 
+variable "ssh_private_key" {
+  description = "Path to SSH private key"
+  type        = string
+  default     = "/home/bob/.ssh/id_ed25519"
+}
+
+variable "aws_credentials" {
+  description = "Path to AWS credentials file"
+  type        = string
+  default     = "/home/bob/.aws/credentials"
+}
+
+locals {
+  total_nodes = var.cluster_control_nodes + var.cluster_worker_nodes
+  
+  # Minimum 1 node required
+  validate_min_nodes = var.cluster_control_nodes >= 1 ? true : tobool("At least 1 control node required")
+  
+  # Generate node roles: first N are control, rest are workers
+  node_roles = [
+    for i in range(local.total_nodes) : 
+      i < var.cluster_control_nodes ? "control" : "worker"
+  ]
+  
+  # Single node gets both roles
+  is_single_node = local.total_nodes == 1
+}
 
 resource "proxmox_virtual_environment_vm" "cluster_vms" {
-  count       = var.cluster_numnodes
+  count       = local.total_nodes
   name        = "${var.cluster_name}-node${count.index}" 
   node_name   = var.proxmox_node
-  description = "Managed by Terraform"
-  tags        = ["terraform", "ubuntu" ,var.cluster_name]
+  description = "Managed by Terraform - Role: ${local.node_roles[count.index]}${local.is_single_node ? " (control+worker)" : ""}"
+  tags        = local.is_single_node ? ["terraform", "ubuntu", var.cluster_name, "control", "worker"] : ["terraform", "ubuntu", var.cluster_name, local.node_roles[count.index]]
 
   lifecycle {
     ignore_changes = [
-      # Ignore changes to these attributes - they can drift without triggering recreate
-      initialization[0].user_data_file_id,  # Cloud-init changes won't recreate VM
-      tags,                                  # Tag changes won't recreate
-      description,                           # Description changes won't recreate
-      ipv4_addresses,                        # IP changes from DHCP won't trigger anything
-      mac_addresses,                         # MAC address drift
+      initialization[0].user_data_file_id,
+      tags,
+      description,
+      ipv4_addresses,
+      mac_addresses,
     ]
   }
 
   agent {
-    # read 'Qemu guest agent' section, change to true only when ready
     enabled = true
   }
-  # if agent is not enabled, the VM may not be able to shutdown properly, and may need to be forced off
+  
   stop_on_destroy = true
 
   startup {
@@ -65,12 +102,12 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
 
   cpu {
     cores = 4
-    type  = "x86-64-v2-AES" # recommended for modern CPUs
+    type  = "x86-64-v2-AES"
   }
 
   memory {
     dedicated = 8192
-    floating  = 8192 # set equal to dedicated to enable ballooning
+    floating  = 8192
   }
 
   disk {
@@ -95,7 +132,7 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
 
   network_device {
     bridge = "vmbr0"
-    model = "e1000"
+    model  = "e1000"
   }
 
   operating_system {
@@ -103,34 +140,13 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
   }
 
   serial_device {}
-
 }
 
-#resource "proxmox_virtual_environment_download_file" "latest_ubuntu" {
 data "proxmox_virtual_environment_file" "latest_ubuntu" {
   content_type = "import"
   datastore_id = "local"
   node_name    = "intrepid"
   file_name    = "noble-server-cloudimg-amd64.qcow2"
-}
-
-# Remove the tls_private_key resource entirely, replace with locals
-variable ssh_public_key {
-  description = "Path to SSH public key"
-  type        = string
-  default     = "/home/bob/.ssh/id_ed25519.pub"
-}
-
-variable ssh_private_key {
-  description = "Path to SSH private key"
-  type        = string
-  default     = "/home/bob/.ssh/id_ed25519"
-}
-
-variable aws_credentials {
-  description = "Path to AWS credentials file"
-  type        = string
-  default     = "/home/bob/.aws/credentials"
 }
 
 output "ubuntu_vm_private_key" {
@@ -146,7 +162,7 @@ resource "proxmox_virtual_environment_file" "cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
   node_name    = "intrepid"
-  count        = var.cluster_numnodes
+  count        = local.total_nodes
 
   source_raw {
     file_name = "cloud-init-${var.cluster_name}-node${count.index}.yaml"
@@ -161,21 +177,26 @@ packages:
   - net-tools
 
 write_files:
+  - path: /etc/node_role
+    permissions: '0644'
+    owner: root:root
+    content: |
+      ${local.node_roles[count.index]}
   - path: /root/.ssh/id_ed25519
     permissions: '0600'
     owner: root:root
     content: |
-      ${indent(6, var.ssh_private_key)}
+      ${indent(6, file(var.ssh_private_key))}
   - path: /root/.ssh/id_ed25519.pub
     permissions: '0644'
     owner: root:root
     content: |
-      ${indent(6, var.ssh_public_key)}
+      ${indent(6, file(var.ssh_public_key))}
   - path: /tmp/aws_credentials
     permissions: '0600'
     owner: root:root
     content: |
-      ${indent(6, var.aws_credentials)}
+      ${indent(6, file(var.aws_credentials))}
 
 users:
   - default
@@ -190,7 +211,6 @@ users:
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMoNIBEOBhaObNW2hoUNX1/q8XCVKdrKmcCCjmvijRU1 bob@groth    
 
-
 runcmd:
   - [ systemctl, daemon-reload ]
   - [ systemctl, enable, qemu-guest-agent ]
@@ -201,18 +221,15 @@ EOF
   }
 }
 
-# Get your Route53 hosted zone
 data "aws_route53_zone" "main" {
   name = "tailandtraillabs.org."
 }
 
-# Create DNS records for each VM
 resource "aws_route53_record" "cluster_nodes" {
-  count   = var.cluster_numnodes
+  count   = local.total_nodes
   zone_id = data.aws_route53_zone.main.zone_id
-  #name    = "${local.vm_names[count.index]}.${var.cluster_name}.tailandtraillabs.org"
   name    = "${var.cluster_name}-node${count.index}.tailandtraillabs.org"
   type    = "A"
   ttl     = 300
-  records = [proxmox_virtual_environment_vm.cluster_vms[count.index].ipv4_addresses[1][0]]  # [1][0] gets first IP of first interface (skipping loopback)
+  records = [proxmox_virtual_environment_vm.cluster_vms[count.index].ipv4_addresses[1][0]]
 }

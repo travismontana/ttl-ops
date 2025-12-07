@@ -28,14 +28,15 @@
         cluster_name: "{{ item.0.name }}"
         domainname: "{{ clusters_data.domainname }}"
         node_index: "{{ item.1 }}"
-        is_node0: "{{ item.1 == 0 }}"
+        is_control_node: "{{ item.1 < item.0.numCnodes }}"
+        is_first_control: "{{ item.1 == 0 }}"
         site: "{{ item.0.site }}"
         owner: "{{ item.0.owner }}"
         appgroups: "{{ item.0.appgroups }}"
         k3s_version: "v1.34.1+k3s1"
         k3s_token: "N2260mN2260m"
       loop: "{{ clusters_data.cluster | product(range(0, 10)) | list }}"
-      when: item.1 < item.0.numnodes
+      when: item.1 < (item.0.numCnodes + item.0.numWnodes)
 
 - name: Install Initial App Load on k3s Cluster
   hosts: k3s_cluster
@@ -48,7 +49,7 @@
       kubeconfig: /etc/rancher/k3s/k3s.yaml
   tasks:
     - name: Install necessary packages
-      when: is_node0
+      when: is_first_control
       apt:
         name:
           - python3-pip
@@ -56,16 +57,18 @@
           - python3-kubernetes
         state: present
         update_cache: yes
+        
     - name: Ensure .kube directory exists
-      when: is_node0
+      when: is_first_control
       file:
         path: /home/ubuntu/.kube
         state: directory
         owner: ubuntu
         group: ubuntu
         mode: '0700'
-    - name: copy kubeconfig to ubuntu home
-      when: is_node0
+        
+    - name: Copy kubeconfig to ubuntu home
+      when: is_first_control
       copy:
         remote_src: yes
         src: /etc/rancher/k3s/k3s.yaml
@@ -73,8 +76,9 @@
         owner: ubuntu
         group: ubuntu
         mode: '0600'
-    - name: Create argo namespace
-      when: is_node0
+        
+    - name: Create argocd namespace
+      when: is_first_control
       kubernetes.core.k8s:
         state: present
         definition:
@@ -83,8 +87,8 @@
           metadata:
             name: argocd
 
-    - name: Ensure external-dns namespace exists
-      when: is_node0
+    - name: Ensure external-dns and cert-manager namespaces exist
+      when: is_first_control
       shell: |
         kubectl create namespace external-dns --dry-run=client -o yaml | kubectl apply -f -
         kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
@@ -92,7 +96,7 @@
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Create route53-credentials secret
-      when: is_node0
+      when: is_first_control
       shell: |
         kubectl create secret generic route53-credentials \
           -n external-dns \
@@ -113,7 +117,7 @@
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Install argocd
-      when: is_node0
+      when: is_first_control
       block:
         - name: ARGOCD KUBERNETES | Download Kubernetes yaml file definition
           get_url:
@@ -134,8 +138,17 @@
             path: /tmp/argocd_install.yaml
             state: absent
 
+    - name: Wait for ArgoCD to fully initialize
+      when: is_first_control
+      shell: |
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-application-controller -n argocd --timeout=300s
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-applicationset-controller -n argocd --timeout=300s
+        sleep 15
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
     - name: Create cluster-in-cluster secret
-      when: is_node0
+      when: is_first_control
       shell: |
         kubectl create secret generic cluster-in-cluster \
           -n argocd \
@@ -143,8 +156,8 @@
           --from-literal=server=https://kubernetes.default.svc \
           --dry-run=client -o yaml | kubectl apply -f -
 
-    - name: Label cluster-in-cluster secret and install core app
-      when: is_node0
+    - name: Label cluster-in-cluster secret
+      when: is_first_control
       shell: |
         kubectl label secret cluster-in-cluster \
           -n argocd \
@@ -153,11 +166,7 @@
           domainname="{{ domainname }}" \
           --overwrite
     
-    - name: Install the core app
-      when: is_node0
+    - name: Install the core ApplicationSet
+      when: is_first_control
       shell: |
-        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml   
-    
-
-
-
+        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core/core.argoappset.yaml
