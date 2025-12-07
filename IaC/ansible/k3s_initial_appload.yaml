@@ -98,8 +98,13 @@
           --from-literal=aws-access-key-id="{{ aws_access_key }}" \
           --from-literal=aws-secret-access-key="{{ aws_secret_key }}" \
           --dry-run=client -o yaml | kubectl apply -f -
-      environment:
-        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+        kubectl annotate secret route53-credentials \
+          -n external-dns \
+          reflector.v1.k8s.emberstack.com/reflection-allowed="true" \
+          reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces="cert-manager" \
+          --overwrite
+          environment:
+            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Install argocd
       when: is_node0
