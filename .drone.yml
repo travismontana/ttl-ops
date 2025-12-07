@@ -78,6 +78,10 @@ steps:
       - chmod 600 /tmp/id_ed25519
       - ssh-add /tmp/id_ed25519
       - tofu apply -auto-approve -var "clusterfile=$CLUSTERS_FILE" -var "token=$PROMOXTOKEN" -var "ssh_public_key=$SSHPUBKEY" -var "ssh_private_key=$SSHPRIVKEY" -var "aws_credentials=$AWSVALS"
+      - sleep 5
+      - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null pi@172.16.2.23 "pihole restartdns reload"
+      - echo "Flushed dns on pihole"
+      - sleep 5
 
 
 trigger:
