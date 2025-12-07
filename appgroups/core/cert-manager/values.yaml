@@ -9,7 +9,7 @@ clusterIssuer:
   server: https://acme-v02.api.letsencrypt.org/directory
 
 wildcard:
-  domain: "*.abode.tailandtraillabs.org"
+  domain: "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
   dnsNames:
-    - "*.abode.tailandtraillabs.org"
-    - "abode.tailandtraillabs.org"
+    - "*.{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+    - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
