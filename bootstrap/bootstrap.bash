@@ -399,8 +399,8 @@ run_argoinstaller() {
 
 # Section: argoinstall (separate entry point, but runs k3sinstall since they're together)
 run_k3sinstall() {
-    log "=== Section: ArgoCD Installation ==="
-    log "Note: ArgoCD is installed as part of k3s playbook"
+    log "=== Section: K3s Installation ==="
+    log "Note: K3s is installed as part of k3s playbook"
     run_k3sinstaller
 }
 
