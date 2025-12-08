@@ -1,8 +1,8 @@
 global:
-  domain: "{{ .Values.clusterName }}.anode"
+  domain: "{{ .Values.clusterName }}.{{ .Values.domainname }}"
   labels:
     ttl-ops/marco: polo
-    
+
 server:
   extraArgs:
     - --basehref=/argocd
@@ -12,7 +12,7 @@ server:
   ingress:
     enabled: true
     ingressClassName: traefik
-    hostname: "{{ .Values.clusterName }}.anode"
+    hostname: "{{ .Values.clusterName }}.{{ .Values.domainname }}"
     path: /argocd
     pathType: Prefix
     annotations:
@@ -20,7 +20,7 @@ server:
     tls:
       - secretName: "{{ .Values.clusterName }}-tls"
         hosts:
-          - "{{ .Values.clusterName }}.anode"
+          - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
 
 configs:
   params:
