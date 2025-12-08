@@ -1,5 +1,5 @@
 global:
-  domain: "{{ .Values.clustername }}.{{ .Values.domainname }}"
+  domain: "{{ .Values.clusteName }}.{{ .Values.domainname }}"
   labels:
     ttl-ops/marco: polo
 
@@ -20,7 +20,7 @@ server:
     tls:
       - secretName: "wildcard-tls"
         hosts:
-          - "{{ .Values.clustername }}.{{ .Values.domainname }}"
+          - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
 
 configs:
   params:
