@@ -1,0 +1,27 @@
+global:
+  domain: "{{ .Values.clusterName }}.anode"
+
+server:
+  extraArgs:
+    - --basehref=/argocd
+    - --rootpath=/argocd
+    - --insecure
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hostname: "{{ .Values.clusterName }}.anode"
+    path: /argocd
+    pathType: Prefix
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      - secretName: "{{ .Values.clusterName }}-tls"
+        hosts:
+          - "{{ .Values.clusterName }}.anode"
+
+configs:
+  params:
+    server.basehref: /argocd
+    server.rootpath: /argocd
+    server.insecure: "true"

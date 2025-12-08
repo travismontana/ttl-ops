@@ -1,11 +1,14 @@
-kubernetes-dashboard:
-  app:
-    enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: traefik
-      path: /dashboard
-      issuer:
-        name: cluster-issuer
-      tls:
-       secretName: wildcard-tls
+enabled: true
+className: traefik
+hosts:
+  - host: "{{ .Values.clusterName }}.anode"
+    paths:
+      - path: /dashboard
+        pathType: Prefix
+annotations:
+  cert-manager.io/cluster-issuer: letsencrypt-prod
+  traefik.ingress.kubernetes.io/router.middlewares: dashboard-stripprefix@kubernetescrd
+tls:
+  - secretName: "{{ .Values.clusterName }}-tls"
+    hosts:
+      - "{{ .Values.clusterName }}.anode"
