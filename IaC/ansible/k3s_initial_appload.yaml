@@ -55,9 +55,29 @@
           - python3-pip
           - python3-venv
           - python3-kubernetes
+          - helm
         state: present
         update_cache: yes
-        
+    - name: Install Helm
+      block:
+        - name: Download Helm GPG key
+          ansible.builtin.get_url:
+            url: https://baltocdn.com/helm/signing.asc
+            dest: /usr/share/keyrings/helm-archive-keyring.asc
+            mode: '0644'
+
+        - name: Add Helm apt repository
+          ansible.builtin.apt_repository:
+            repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/helm-archive-keyring.asc] https://baltocdn.com/helm/stable/debian/ all main"
+            state: present
+            filename: helm
+
+        - name: Install Helm
+          ansible.builtin.apt:
+            name: helm
+            state: present
+            update_cache: yes
+
     - name: Ensure .kube directory exists
       when: is_first_control
       file:
@@ -137,7 +157,57 @@
           file:
             path: /tmp/argocd_install.yaml
             state: absent
+    - name: Install ArgoCD via Helm
+      when: is_first_control
+      block:
+        - name: Add ArgoCD Helm repository
+          kubernetes.core.helm_repository:
+            name: argo
+            repo_url: https://argoproj.github.io/argo-helm
 
+        - name: Create ArgoCD bootstrap values
+          copy:
+            content: |
+              # Minimal bootstrap config - full config managed by argo-bin app
+              server:
+                extraArgs:
+                  - --insecure
+                service:
+                  type: ClusterIP
+              
+              configs:
+                params:
+                  server.insecure: "true"
+            dest: /tmp/argocd-bootstrap-values.yaml
+
+        - name: Deploy ArgoCD
+          kubernetes.core.helm:
+            name: argocd
+            chart_ref: argo/argo-cd
+            chart_version: "7.7.0"  # Or whatever version you want
+            release_namespace: argocd
+            create_namespace: true
+            values_files:
+              - /tmp/argocd-bootstrap-values.yaml
+            wait: true
+
+        - name: Wait for ArgoCD to be ready
+          kubernetes.core.k8s_info:
+            kind: Deployment
+            namespace: argocd
+            name: argocd-server
+            wait: yes
+            wait_condition:
+              type: Available
+              status: "True"
+            wait_timeout: 300
+
+      always:
+        - name: Clean up bootstrap values
+          file:
+            path: /tmp/argocd-bootstrap-values.yaml
+            state: absent
+            
     - name: Wait for ArgoCD to fully initialize
       when: is_first_control
       shell: |
