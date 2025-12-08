@@ -199,6 +199,7 @@
             create_namespace: true
             values_files:
               - /tmp/argocd-bootstrap-values.yaml
+            kubeconfig: /etc/rancher/k3s/k3s.yaml 
             wait: true
 
         - name: Wait for ArgoCD to be ready
