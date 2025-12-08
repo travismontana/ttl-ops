@@ -15,7 +15,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_URL="git@github.com:travismontana/ttl-ops.git"
 
 # Defaults
-DEFAULT_WORK_DIR=$(mktemp -d /tmp/bootstrap.XXXXXXX)
+#DEFAULT_WORK_DIR=$(mktemp -d /tmp/bootstrap.XXXXXXX)
+DEFAULT_WORK_DIR=/tmp/bootstrap
 WORK_DIR="${WORK_DIR:-$DEFAULT_WORK_DIR}"
 REPO_DIR=""
 SECTION="all"
@@ -452,10 +453,10 @@ run_destroy() {
     # Resolve cluster file path
     resolve_cluster_file
     log "  Cluster file: $CLUSTER_FILE"
-    
+    run_git  # Ensure repo is available for tofu destroy
     # Validate repository exists
     [[ -d "$TOFU_DIR" ]] || error "Tofu directory not found: $TOFU_DIR (run --section git first)"
-    
+
     # Validate AWS credentials
     [[ -f "$HOME/.aws/credentials" ]] || error "AWS credentials not found at ~/.aws/credentials"
     

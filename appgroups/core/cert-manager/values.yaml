@@ -11,3 +11,5 @@ clusterIssuer:
 wildcard:
   domain: "*.{{ .Values.clusterName }}.{{ .Values.domainname }}"
   dnsNames:
+    - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+    - "*.{clusterName}.{{ .Values.domainname }}"
