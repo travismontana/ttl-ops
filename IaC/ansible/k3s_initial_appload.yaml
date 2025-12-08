@@ -225,33 +225,33 @@
           domainname="{{ domainname }}" \
           --overwrite
 
-    - name: Create ArgoCD bootstrap Application
-      when: is_first_control
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: argocd
-            namespace: argocd
-          spec:
-            project: default
-            source:
-              repoURL: https://github.com/travismontana/ttl-ops
-              path: appgroups/argocd
-              targetRevision: HEAD
-              helm:
-                parameters:
-                  - name: clusterName
-                    value: "{{ cluster_name }}"
-            destination:
-              server: https://kubernetes.default.svc
-              namespace: argocd
-            syncPolicy:
-              automated:
-                prune: true
-                selfHeal: true
+#    - name: Create ArgoCD bootstrap Application
+#      when: is_first_control
+#      kubernetes.core.k8s:
+#        state: present
+#        definition:
+#          apiVersion: argoproj.io/v1alpha1
+#          kind: Application
+#          metadata:
+#            name: argocd
+#            namespace: argocd
+#          spec:
+#            project: default
+#            source:
+#              repoURL: https://github.com/travismontana/ttl-ops
+#              path: appgroups/argocd
+#              targetRevision: HEAD
+#              helm:
+#                parameters:
+#                  - name: clusterName
+#                    value: "{{ cluster_name }}"
+#            destination:
+#              server: https://kubernetes.default.svc
+#              namespace: argocd
+#            syncPolicy:
+#              automated:
+#                prune: true
+#                selfHeal: true
 
     - name: Install the core ApplicationSet
       when: is_first_control
