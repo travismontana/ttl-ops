@@ -1,5 +1,5 @@
 global:
-  domain: "{{ .Values.clusteName }}.{{ .Values.domainName }}"
+  domain: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
   labels:
     ttl-ops/marco: polo
 
