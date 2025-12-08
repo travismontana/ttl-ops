@@ -1,5 +1,5 @@
 global:
-  domain: "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+  domain: "{{ .Values.clustername }}.{{ .Values.domainname }}"
   labels:
     ttl-ops/marco: polo
 
@@ -18,9 +18,9 @@ server:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
     tls:
-      - secretName: "{{ .Values.clusterName }}-tls"
+      - secretName: "wildcard-tls"
         hosts:
-          - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+          - "{{ .Values.clustername }}.{{ .Values.domainname }}"
 
 configs:
   params:
