@@ -1,6 +1,8 @@
 global:
   domain: "{{ .Values.clusterName }}.anode"
-
+  labels:
+    ttl-ops/marco: polo
+    
 server:
   extraArgs:
     - --basehref=/argocd
