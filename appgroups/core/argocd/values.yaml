@@ -1,5 +1,5 @@
 global:
-  domain: "{{ .Values.clusteName }}.{{ .Values.domainname }}"
+  domain: "{{ .Values.clusteName }}.{{ .Values.domainName }}"
   labels:
     ttl-ops/marco: polo
 
@@ -12,7 +12,7 @@ server:
   ingress:
     enabled: true
     ingressClassName: traefik
-    hostname: "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+    hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
     path: /argocd
     pathType: Prefix
     annotations:
@@ -20,7 +20,7 @@ server:
     tls:
       - secretName: "wildcard-tls"
         hosts:
-          - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+          - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
 
 configs:
   params:
