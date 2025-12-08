@@ -233,13 +233,13 @@
           apiVersion: argoproj.io/v1alpha1
           kind: Application
           metadata:
-            name: argo-bin
+            name: argocd
             namespace: argocd
           spec:
             project: default
             source:
               repoURL: https://github.com/travismontana/ttl-ops
-              path: appgroups/argo-bin
+              path: appgroups/argocd
               targetRevision: HEAD
               helm:
                 parameters:
