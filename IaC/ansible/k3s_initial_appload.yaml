@@ -55,28 +55,37 @@
           - python3-pip
           - python3-venv
           - python3-kubernetes
-          - helm
         state: present
         update_cache: yes
-    - name: Install Helm
+
+    - name: Install Helm binary
+      when: is_first_control
       block:
-        - name: Download Helm GPG key
+        - name: Download Helm
           ansible.builtin.get_url:
-            url: https://baltocdn.com/helm/signing.asc
-            dest: /usr/share/keyrings/helm-archive-keyring.asc
-            mode: '0644'
+            url: https://get.helm.sh/helm-v3.16.2-linux-amd64.tar.gz
+            dest: /tmp/helm.tar.gz
 
-        - name: Add Helm apt repository
-          ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/helm-archive-keyring.asc] https://baltocdn.com/helm/stable/debian/ all main"
-            state: present
-            filename: helm
+        - name: Extract Helm
+          ansible.builtin.unarchive:
+            src: /tmp/helm.tar.gz
+            dest: /tmp
+            remote_src: yes
 
-        - name: Install Helm
-          ansible.builtin.apt:
-            name: helm
-            state: present
-            update_cache: yes
+        - name: Install Helm binary
+          ansible.builtin.copy:
+            src: /tmp/linux-amd64/helm
+            dest: /usr/local/bin/helm
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /tmp/helm.tar.gz
+            - /tmp/linux-amd64
 
     - name: Ensure .kube directory exists
       when: is_first_control
@@ -157,6 +166,7 @@
           file:
             path: /tmp/argocd_install.yaml
             state: absent
+
     - name: Install ArgoCD via Helm
       when: is_first_control
       block:
@@ -207,7 +217,7 @@
           file:
             path: /tmp/argocd-bootstrap-values.yaml
             state: absent
-            
+
     - name: Wait for ArgoCD to fully initialize
       when: is_first_control
       shell: |
@@ -235,7 +245,35 @@
           clustername="{{ cluster_name }}" \
           domainname="{{ domainname }}" \
           --overwrite
-    
+
+    - name: Create ArgoCD bootstrap Application
+      when: is_first_control
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: argo-bin
+            namespace: argocd
+          spec:
+            project: default
+            source:
+              repoURL: https://github.com/travismontana/ttl-ops
+              path: appgroups/argo-bin
+              targetRevision: HEAD
+              helm:
+                parameters:
+                  - name: clusterName
+                    value: "{{ cluster_name }}"
+            destination:
+              server: https://kubernetes.default.svc
+              namespace: argocd
+            syncPolicy:
+              automated:
+                prune: true
+                selfHeal: true
+
     - name: Install the core ApplicationSet
       when: is_first_control
       shell: |
