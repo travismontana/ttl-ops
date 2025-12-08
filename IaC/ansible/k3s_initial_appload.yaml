@@ -145,28 +145,6 @@
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
-    - name: Install argocd
-      when: is_first_control
-      block:
-        - name: ARGOCD KUBERNETES | Download Kubernetes yaml file definition
-          get_url:
-            url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-            dest: /tmp/argocd_install.yaml
-            owner: root
-            group: root
-            mode: '0440'
-        
-        - name: ARGOCD KUBERNETES | Manage Kubernetes objects
-          kubernetes.core.k8s:
-            namespace: argocd
-            src: /tmp/argocd_install.yaml
-            state: present
-      always:
-        - name: ARGOCD KUBERNETES | Clean installation
-          file:
-            path: /tmp/argocd_install.yaml
-            state: absent
-
     - name: Install ArgoCD via Helm
       when: is_first_control
       block:
