@@ -453,7 +453,8 @@ run_appgroupinstall() {
     
     [[ -n "$AWS_ACCESS_KEY" ]] || error "Could not parse AWS access key from credentials file"
     [[ -n "$AWS_SECRET_KEY" ]] || error "Could not parse AWS secret key from credentials file"
-        
+
+    cd "$ANSIBLE_DIR"
 
     if [[ "$DRY_RUN" == "true" ]]; then
         run_cmd ansible-playbook k3s_install_mainapps.yaml \
@@ -462,7 +463,7 @@ run_appgroupinstall() {
             -e "aws_secret_key=REDACTED" \
             --check
     else
-        run_cmd ansible-playbook k3s_install_mainapps.yaml \
+        run_cmd ansible-playbook k3s_install_mainapps.yaml  \
             -e "clusters_file=$CLUSTER_FILE" \
             -e "aws_access_key=$AWS_ACCESS_KEY" \
             -e "aws_secret_key=$AWS_SECRET_KEY"
