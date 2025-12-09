@@ -7,6 +7,9 @@ ingress:
   tls:
     - secretName: "wildcard-tls"
 
+probes:
+  liveness:
+    enabled: false
 
 persistence:
   config:
