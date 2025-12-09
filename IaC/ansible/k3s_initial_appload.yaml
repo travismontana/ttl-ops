@@ -261,7 +261,7 @@
           -n argocd \
           appgroup-{{ item }}=true \
           --overwrite
-      loop: "{{ appgroups.keys() | list }}"
+      loop: "{{ appgroups }}"
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
