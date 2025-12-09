@@ -22,13 +22,13 @@ config:
 # Media storage (NFS)
 media:
   nfs:
-    server: your-nfs-server.local  # Override with your NFS server
-    path: /mnt/media  # Override with your NFS export path
+    server: danas.hangar.bpfx.org  # Override with your NFS server
+    path: /volume1/dataz  # Override with your NFS export path
   mountPath: /media
 
 # Environment variables
 env:
-  TZ: America/New_York
+  TZ: America/Chicago
   PUID: "1000"
   PGID: "1000"
 
