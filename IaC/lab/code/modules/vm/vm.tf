@@ -88,7 +88,7 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
       initialization[0].user_data_file_id,
       tags,
       description,
-      ipv4_addresses,
+#      ipv4_addresses,
       mac_addresses,
     ]
   }
