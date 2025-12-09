@@ -1,0 +1,115 @@
+---
+- name: Build dynamic inventory from clusters.json
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  remote_user: root
+  vars:
+    clusters_file: "./clusters.json"
+  
+  tasks:
+    - name: Read clusters.json
+      slurp:
+        src: "{{ clusters_file }}"
+      register: clusters_raw
+
+    - name: Parse clusters JSON
+      set_fact:
+        clusters_data: "{{ clusters_raw.content | b64decode | from_json }}"
+
+    - name: Add hosts dynamically
+      add_host:
+        name: "{{ item.0.name }}-node{{ item.1 }}"
+        ansible_user: ubuntu
+        groups: 
+          - k3s_cluster
+          - "cluster_{{ item.0.name }}"
+        ansible_host: "{{ item.0.name }}-node{{ item.1 }}.{{ clusters_data.domainname }}"
+        cluster_name: "{{ item.0.name }}"
+        domainname: "{{ clusters_data.domainname }}"
+        node_index: "{{ item.1 }}"
+        is_control_node: "{{ item.1 < item.0.numCnodes }}"
+        is_first_control: "{{ item.1 == 0 }}"
+        site: "{{ item.0.site }}"
+        owner: "{{ item.0.owner }}"
+        appgroups: "{{ item.0.appgroups }}"
+        k3s_version: "v1.34.1+k3s1"
+        k3s_token: "N2260mN2260m"
+      loop: "{{ clusters_data.cluster | product(range(0, 10)) | list }}"
+      when: item.1 < (item.0.numCnodes + item.0.numWnodes)
+
+- name: Install Initial App Load on k3s Cluster
+  hosts: k3s_cluster
+  become: yes
+  gather_facts: yes
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+  module_defaults:
+    group/kubernetes.core.k8s:
+      kubeconfig: /etc/rancher/k3s/k3s.yaml
+  tasks:
+    - name: Install necessary packages
+      when: is_first_control
+      apt:
+        name:
+          - python3-pip
+          - python3-venv
+          - python3-kubernetes
+        state: present
+        update_cache: yes
+
+    - name: Install Helm binary
+      when: is_first_control
+      block:
+        - name: Download Helm
+          ansible.builtin.get_url:
+            url: https://get.helm.sh/helm-v3.16.2-linux-amd64.tar.gz
+            dest: /tmp/helm.tar.gz
+
+        - name: Extract Helm
+          ansible.builtin.unarchive:
+            src: /tmp/helm.tar.gz
+            dest: /tmp
+            remote_src: yes
+
+        - name: Install Helm binary
+          ansible.builtin.copy:
+            src: /tmp/linux-amd64/helm
+            dest: /usr/local/bin/helm
+            mode: '0755'
+            remote_src: yes
+
+        - name: Clean up
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /tmp/helm.tar.gz
+            - /tmp/linux-amd64
+
+    - name: Ensure .kube directory exists
+      when: is_first_control
+      file:
+        path: /home/ubuntu/.kube
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0700'
+        
+    - name: Copy kubeconfig to ubuntu home
+      when: is_first_control
+      copy:
+        remote_src: yes
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: /home/ubuntu/.kube/config
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+
+- name: Install appgroup ApplicationSets
+  when: is_first_control
+  shell: |
+    kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/{{ item }}.argoappset.yaml
+  loop: "{{ appgroups }}"
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
