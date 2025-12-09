@@ -113,3 +113,16 @@
       loop: "{{ appgroups }}"
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+    
+    - name: Wait for 10 secs for apps to start deploying
+      when: is_first_control
+      pause:
+        seconds: 10
+    
+    - name: kick off the syncs
+      when: is_first_control
+      shell: |
+        kubectl argo appset sync {{ item.keys() | first }}
+      loop: "{{ appgroups }}"       
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml

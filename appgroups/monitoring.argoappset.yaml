@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: monitoring-applicationset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - matrix:
+      generators:
+      - clusters:
+          selector:
+            matchLabels:
+              argocd.argoproj.io/secret-type: cluster
+              appgroup/monitoring: "true"
+      - git:
+          repoURL: https://github.com/travismontana/ttl-ops
+          revision: HEAD
+          directories:
+          - path: appgroups/monitoring/*
+  template:
+    metadata:
+      name: '{{.name}}-{{.path.basename}}'
+    spec:
+      project: default
+      destination:
+        namespace: '{{.path.basename}}'
+        server: '{{.server}}'
+      source:
+        repoURL: https://github.com/travismontana/ttl-ops
+        targetRevision: HEAD
+        path: 'appgroups/monitoring/{{.path.basename}}'
+        helm:
+          parameters:
+            - name: clusterName
+              value: '{{ index .metadata.labels "clustername" }}'
+            - name: domainName
+              value: '{{ index .metadata.labels "domainname" }}'
+            - name: ingress.main.hosts[0].host
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: ingress.main.tls[0].hosts[0]
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true

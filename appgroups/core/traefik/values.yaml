@@ -1,0 +1,18 @@
+ports:
+  websecure:
+    tls:
+      enabled: true
+  web:
+    redirections:
+      entryPoint:
+        to: websecure
+        permanent: true
+        scheme: https
+deployment:
+  dnsConfig:
+    nameservers:
+      - 172.16.2.23
+    searches:
+      - hangar.bpfx.org
+      - tailandtraillabs.org
+
