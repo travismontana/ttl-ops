@@ -1,6 +1,6 @@
 ingress:
   main:
-    enabled: true
+    enabled: false
     ingressClassName: traefik
     pathType: Prefix
     annotations:
