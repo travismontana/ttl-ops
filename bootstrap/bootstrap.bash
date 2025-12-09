@@ -442,7 +442,20 @@ run_appgroupinstall() {
         log "Application groups are managed by ArgoCD ApplicationSets"
         log "Check status: ssh ubuntu@$FIRST_NODE 'kubectl get applications -n argocd'"
     fi
-    
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        run_cmd ansible-playbook k3s_install_mainapps.yaml \
+            -e "clusters_file=$CLUSTER_FILE" \
+            -e "aws_access_key=REDACTED" \
+            -e "aws_secret_key=REDACTED" \
+            --check
+    else
+        run_cmd ansible-playbook k3s_install_mainapps.yaml \
+            -e "clusters_file=$CLUSTER_FILE" \
+            -e "aws_access_key=$AWS_ACCESS_KEY" \
+            -e "aws_secret_key=$AWS_SECRET_KEY"
+    fi
+
     log "Application group installation complete"
 }
 
