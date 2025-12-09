@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: radarr-routes
+  namespace: kube-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`pirate.abode.tailandtraillabs.org`) && PathPrefix(`/radarr`)
+      kind: Rule
+      services:
+        - name: pirate-radarr
+          namespace: radarr
+          port: 7878
+      middlewares:
+        - name: radarr-stripprefix
