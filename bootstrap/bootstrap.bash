@@ -442,6 +442,13 @@ run_appgroupinstall() {
         log "Application groups are managed by ArgoCD ApplicationSets"
         log "Check status: ssh ubuntu@$FIRST_NODE 'kubectl get applications -n argocd'"
     fi
+    # Parse AWS credentials for Ansible
+    AWS_ACCESS_KEY=$(awk -F'=' '/aws_access_key_id/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' ~/.aws/credentials | head -1)
+    AWS_SECRET_KEY=$(awk -F'=' '/aws_secret_access_key/ {gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}' ~/.aws/credentials | head -1)
+    
+    [[ -n "$AWS_ACCESS_KEY" ]] || error "Could not parse AWS access key from credentials file"
+    [[ -n "$AWS_SECRET_KEY" ]] || error "Could not parse AWS secret key from credentials file"
+        
 
     if [[ "$DRY_RUN" == "true" ]]; then
         run_cmd ansible-playbook k3s_install_mainapps.yaml \
