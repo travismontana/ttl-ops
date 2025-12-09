@@ -137,6 +137,7 @@
                   syncStrategy:
                     hook: {}
             dest: /tmp/appset-sync-{{ item.keys() | first }}.yaml
+            loop: "{{ appgroups }}"
 
         - name: Apply operation to trigger sync
           shell: |
