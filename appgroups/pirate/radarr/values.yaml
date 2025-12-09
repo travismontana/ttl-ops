@@ -11,6 +11,10 @@ ingress:
 probes:
   liveness:
     enabled: false
+  readiness:
+    enabled: false
+  startup:
+    enabled: false
 
 labels:
   ttl-ops/marco: polo
