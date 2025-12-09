@@ -141,7 +141,8 @@
 
         - name: Apply operation to trigger sync
           shell: |
-            kubectl apply -f /tmp/appset-sync-{{ item.keys() | first }}.yaml
+            #kubectl apply -f /tmp/appset-sync-{{ item.keys() | first }}.yaml
+            echo "Yes"
           environment:
             KUBECONFIG: /etc/rancher/k3s/k3s.yaml
           loop: "{{ appgroups }}"
