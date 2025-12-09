@@ -3,7 +3,7 @@ ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-      - host: "placeholder"
+      - host: "pirate.abode.tailandtraillabs.org"
         paths:
           - path: /radarr
             pathType: Prefix
@@ -13,7 +13,7 @@ ingress:
     tls:
       - secretName: wildcard-tls
         hosts:
-          - "placeholder"
+          - "pirate.abode.tailandtraillabs.org"
 
 persistence:
   config:
