@@ -36,10 +36,12 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}'
             - name: domainName
               value: '{{ index .metadata.labels "domainname" }}'
-            - name: ingress.main.hosts[0].host
+            - name: ingress.tls[0].hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: ingress.main.tls[0].hosts[0]
+            - name: ingress.hostname
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: ingress.path
+              value: '/{{.path.basename}}'
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
