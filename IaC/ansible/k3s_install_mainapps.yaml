@@ -144,6 +144,7 @@
             kubectl apply -f /tmp/appset-sync-{{ item.keys() | first }}.yaml
           environment:
             KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+          loop: "{{ appgroups }}"
 
         - name: Clean up operation file
           file:
