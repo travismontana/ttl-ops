@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pirate-applicationset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - matrix:
+      generators:
+      - clusters:
+          selector:
+            matchLabels:
+              argocd.argoproj.io/secret-type: cluster
+              appgroup/pirate: "true"
+      - git:
+          repoURL: https://github.com/travismontana/ttl-ops
+          revision: HEAD
+          directories:
+          - path: appgroups/pirate/*
+  template:
+    metadata:
+      name: '{{.name}}-{{.path.basename}}'
+    spec:
+      project: default
+      destination:
+        namespace: '{{.path.basename}}'
+        server: '{{.server}}'
+      source:
+        repoURL: https://github.com/travismontana/ttl-ops
+        targetRevision: HEAD
+        path: 'appgroups/pirate/{{.path.basename}}'
+        helm:
+          parameters:
+            - name: clusterName
+              value: '{{ index .metadata.labels "clustername" }}'
+            - name: domainName
+              value: '{{ index .metadata.labels "domainname" }}'
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true

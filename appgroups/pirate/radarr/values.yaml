@@ -1,0 +1,28 @@
+ingress:
+  main:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - host: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+        paths:
+          - path: /radarr
+            pathType: Prefix
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      traefik.ingress.kubernetes.io/router.middlewares: radarr-stripprefix@kubernetescrd
+    tls:
+      - secretName: wildcard-tls
+        hosts:
+          - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+
+persistence:
+  config:
+    enabled: true
+    storageClass: "local-path"
+    size: 1Gi
+  media:
+    enabled: true
+    type: nfs
+    server: danas.hangar.bpfx.org
+    path: /volume1/dataz
+    mountPath: /media

@@ -253,6 +253,7 @@
           argocd.argoproj.io/secret-type=cluster \
           clustername="{{ cluster_name }}" \
           domainname="{{ domainname }}" \
+          {% for appgroup in appgroups %}appgroup/{{ appgroup }}=true {% endfor %} \
           --overwrite
 
 #    - name: Create ArgoCD bootstrap Application
