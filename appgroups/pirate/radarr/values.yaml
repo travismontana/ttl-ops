@@ -1,19 +1,6 @@
 ingress:
   main:
-    enabled: true
-    ingressClassName: traefik
-    hosts:
-      - host: "pirate.abode.tailandtraillabs.org"
-        paths:
-          - path: /radarr
-            pathType: Prefix
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      traefik.ingress.kubernetes.io/router.middlewares: radarr-stripprefix@kubernetescrd
-    tls:
-      - secretName: wildcard-tls
-        hosts:
-          - "pirate.abode.tailandtraillabs.org"
+    enabled: false
 
 persistence:
   config:
