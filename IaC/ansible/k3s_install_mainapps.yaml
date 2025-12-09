@@ -106,10 +106,10 @@
         group: ubuntu
         mode: '0600'
 
-- name: Install appgroup ApplicationSets
-  when: is_first_control
-  shell: |
-    kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/{{ item }}.argoappset.yaml
-  loop: "{{ appgroups }}"
-  environment:
-    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+    - name: Install appgroup ApplicationSets
+      when: is_first_control
+      shell: |
+        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/{{ item }}.argoappset.yaml
+      loop: "{{ appgroups }}"
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
