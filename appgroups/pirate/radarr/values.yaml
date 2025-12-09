@@ -1,15 +1,12 @@
 ingress:
   enabled: true
   ingressClassName: traefik
-  hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
-  path: /"${{ .Values.name}}"
   pathType: Prefix
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   tls:
     - secretName: "wildcard-tls"
-      hosts:
-        - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+
 
 persistence:
   config:
