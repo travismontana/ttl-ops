@@ -1,47 +1,141 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: pirate-applicationset
+  name: arr-apps
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"  # Deploy after core infrastructure
 spec:
   goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
   - matrix:
       generators:
+      # First dimension: Applications
+      - list:
+          elements:
+          - app: sonarr
+            port: "8989"
+            image: linuxserver/sonarr
+          - app: radarr
+            port: "7878"
+            image: linuxserver/radarr
+          - app: bazarr
+            port: "6767"
+            image: linuxserver/bazarr
+          - app: lidarr
+            port: "8686"
+            image: linuxserver/lidarr
+      
+      # Second dimension: Clusters with media label
       - clusters:
           selector:
             matchLabels:
               argocd.argoproj.io/secret-type: cluster
-              appgroup/pirate: "true"
-      - git:
-          repoURL: https://github.com/travismontana/ttl-ops
-          revision: HEAD
-          directories:
-          - path: appgroups/pirate/*
+              has-media: "true"  # Only clusters with media storage
+          values:
+            # Extract cluster-specific values from annotations
+            nfsServer: '{{index .metadata.annotations "nfs-server"}}'
+            nfsPath: '{{index .metadata.annotations "nfs-media-path"}}'
+            domain: '{{index .metadata.annotations "domain"}}'
+            storageClass: '{{index .metadata.annotations "storage-class"}}'
+            timezone: '{{default "America/New_York" (index .metadata.annotations "timezone")}}'
+
   template:
     metadata:
-      name: '{{.name}}-{{.path.basename}}'
+      name: '{{.app}}-{{.name}}'
+      labels:
+        app: '{{.app}}'
+        cluster: '{{.name}}'
+        app-group: media
+      annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+        argocd.argoproj.io/sync-options: PruneLast=true
     spec:
       project: default
-      destination:
-        namespace: '{{.path.basename}}'
-        server: '{{.server}}'
+      
       source:
-        repoURL: https://github.com/travismontana/ttl-ops
-        targetRevision: HEAD
-        path: 'appgroups/pirate/{{.path.basename}}'
+        repoURL: https://github.com/travismontana/ttl-ops # Update this
+        targetRevision: main
+        path: charts/arr-app
         helm:
-          parameters:
-            - name: clusterName
-              value: '{{ index .metadata.labels "clustername" }}'
-            - name: domainName
-              value: '{{ index .metadata.labels "domainname" }}'
-            - name: ingress.tls[0].hosts[0]
-              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: ingress.hostname
-              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: ingress.path
-              value: '/{{.path.basename}}'
+          releaseName: '{{.app}}'
+          values: |
+            app:
+              name: {{.app}}
+            
+            image:
+              registry: lscr.io
+              repository: {{.image}}
+              tag: latest
+              pullPolicy: IfNotPresent
+            
+            service:
+              type: ClusterIP
+              port: {{.port}}
+            
+            config:
+              storageClass: "{{.values.storageClass}}"
+              size: 1Gi
+              accessMode: ReadWriteOnce
+            
+            media:
+              nfs:
+                server: "{{.values.nfsServer}}"
+                path: "{{.values.nfsPath}}"
+              mountPath: /media
+            
+            env:
+              TZ: "{{.values.timezone}}"
+              PUID: "1000"
+              PGID: "1000"
+            
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "1Gi"
+                cpu: "1000m"
+            
+            ingress:
+              enabled: true
+              className: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+              hosts:
+                - host: {{.app}}.{{.values.domain}}
+                  paths:
+                    - path: /
+                      pathType: Prefix
+              tls:
+                - secretName: {{.app}}-tls
+                  hosts:
+                    - {{.app}}.{{.values.domain}}
+      
+      destination:
+        server: '{{.server}}'
+        namespace: media
+      
       syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+      
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - .spec.template.metadata.annotations."kubectl.kubernetes.io/restartedAt"
