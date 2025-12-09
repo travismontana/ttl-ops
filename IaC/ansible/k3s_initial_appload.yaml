@@ -166,6 +166,36 @@
               configs:
                 params:
                   server.insecure: "true"
+              global:
+                domain: "{{ cluster_name }}.{{ domainname }}"
+                labels:
+                  ttl-ops/marco: polo
+
+              server:
+                extraArgs:
+                  - --basehref=/argocd
+                  - --rootpath=/argocd
+                  - --insecure
+
+                ingress:
+                  enabled: true
+                  ingressClassName: traefik
+                  hostname: "{{ cluster_name }}.{{ domainname}}"
+                  path: /argocd
+                  pathType: Prefix
+                  annotations:
+                    cert-manager.io/cluster-issuer: letsencrypt-prod
+                  tls:
+                    - secretName: "wildcard-tls"
+                      hosts:
+                        - "{{ cluster_name }}.{{ domainname }}"
+
+              configs:
+                params:
+                  server.basehref: /argocd
+                  server.rootpath: /argocd
+                  server.insecure: "true"
+              
             dest: /tmp/argocd-bootstrap-values.yaml
 
         - name: Deploy ArgoCD
