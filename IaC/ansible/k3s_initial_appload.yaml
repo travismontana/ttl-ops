@@ -253,8 +253,17 @@
           argocd.argoproj.io/secret-type=cluster \
           clustername="{{ cluster_name }}" \
           domainname="{{ domainname }}" \
-          {% for appgroup in appgroups %}appgroup/{{ appgroup }}=true {% endfor %} \
           --overwrite
+    - name: Label cluster-in-cluster secret with appgroups
+      when: is_first_control
+      shell: |
+        kubectl label secret cluster-in-cluster \
+          -n argocd \
+          appgroup/{{ item }}=true \
+          --overwrite
+      loop: "{{ appgroups }}"
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
 #    - name: Create ArgoCD bootstrap Application
 #      when: is_first_control
