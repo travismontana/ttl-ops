@@ -259,7 +259,7 @@
       shell: |
         kubectl label secret cluster-in-cluster \
           -n argocd \
-          appgroup-{{ item }}=true \
+          {{ item }}=true \
           --overwrite
       loop: "{{ appgroups }}"
       environment:
