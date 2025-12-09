@@ -1,11 +1,12 @@
 ingress:
-  enabled: true
-  ingressClassName: traefik
-  pathType: Prefix
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  tls:
-    - secretName: "wildcard-tls"
+  main:
+    enabled: true
+    ingressClassName: traefik
+    pathType: Prefix
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    tls:
+      - secretName: "wildcard-tls"
 
 probes:
   liveness:
