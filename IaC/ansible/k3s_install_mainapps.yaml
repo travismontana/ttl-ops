@@ -148,7 +148,7 @@
           file:
             path: /tmp/appset-sync-{{ item.keys() | first }}.yaml
             state: absent
-      loop: "{{ appgroups }}"
+          loop: "{{ appgroups }}"
   
     - name: Wait for 10 secs for apps to start deploying
       when: is_first_control
