@@ -3,7 +3,8 @@ ingress:
     enabled: true
     ingressClassName: traefik
     hosts:
-      - paths:
+      - host: "placeholder"
+        paths:
           - path: /radarr
             pathType: Prefix
     annotations:
@@ -11,6 +12,8 @@ ingress:
       traefik.ingress.kubernetes.io/router.middlewares: radarr-stripprefix@kubernetescrd
     tls:
       - secretName: wildcard-tls
+        hosts:
+          - "placeholder"
 
 persistence:
   config:
