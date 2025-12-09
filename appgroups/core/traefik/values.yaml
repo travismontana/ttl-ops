@@ -15,4 +15,8 @@ deployment:
     searches:
       - hangar.bpfx.org
       - tailandtraillabs.org
-
+service:
+  type: LoadBalancer
+ingressRoute:
+  dashboard:
+    enabled: false
