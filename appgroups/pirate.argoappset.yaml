@@ -65,39 +65,23 @@ spec:
               name: {{.app}}
             
             image:
-              registry: lscr.io
               repository: {{.image}}
-              tag: latest
-              pullPolicy: IfNotPresent
-            
+
             service:
-              type: ClusterIP
               port: {{.port}}
             
             config:
               storageClass: "{{.values.storageClass}}"
-              size: 1Gi
-              accessMode: ReadWriteOnce
-            
+
             media:
               nfs:
                 server: "{{.values.nfsServer}}"
                 path: "{{.values.nfsPath}}"
-              mountPath: /media
+
             
             env:
               TZ: "{{.values.timezone}}"
-              PUID: "1000"
-              PGID: "1000"
-            
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "100m"
-              limits:
-                memory: "1Gi"
-                cpu: "1000m"
-            
+
             ingress:
               enabled: true
               className: traefik
@@ -115,7 +99,7 @@ spec:
       
       destination:
         server: '{{.server}}'
-        namespace: media
+        namespace: '{{.app}}'
       
       syncPolicy:
         automated:
