@@ -32,18 +32,18 @@ spec:
           selector:
             matchLabels:
               argocd.argoproj.io/secret-type: cluster
-              has-media: "true"  # Only clusters with media storage
+              appgroup/pirate: "true"  # Only clusters with media storage
           values:
             # Extract cluster-specific values from annotations
-            nfsServer: '{{index .metadata.annotations "nfs-server"}}'
-            nfsPath: '{{index .metadata.annotations "nfs-media-path"}}'
-            domain: '{{index .metadata.annotations "domain"}}'
-            storageClass: '{{index .metadata.annotations "storage-class"}}'
-            timezone: '{{default "America/New_York" (index .metadata.annotations "timezone")}}'
+            nfsServer: "danas.hangar.bpfx.org"
+            nfsPath: "/volume1/dataz"
+            domain: "abode.tailandtraillabs.org"
+            storageClass: "local-path"
+            timezone: "America/Chicago"
 
   template:
     metadata:
-      name: '{{.app}}-{{.name}}'
+      name: '{{.name}}-{{.app}}'
       labels:
         app: '{{.app}}'
         cluster: '{{.name}}'
@@ -57,7 +57,7 @@ spec:
       source:
         repoURL: https://github.com/travismontana/ttl-ops # Update this
         targetRevision: main
-        path: charts/arr-app
+        path: appgroups/pirate/arr-app
         helm:
           releaseName: '{{.app}}'
           values: |
@@ -103,16 +103,15 @@ spec:
               className: traefik
               annotations:
                 cert-manager.io/cluster-issuer: letsencrypt-prod
-                traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
               hosts:
-                - host: {{.app}}.{{.values.domain}}
+                - host: {{.app}}.{{.name}}.{{.values.domain}}
                   paths:
                     - path: /
                       pathType: Prefix
               tls:
-                - secretName: {{.app}}-tls
+                - secretName: wildcard-tls
                   hosts:
-                    - {{.app}}.{{.values.domain}}
+                    - {{.app}}.{{.name}}.{{.values.domain}}
       
       destination:
         server: '{{.server}}'
