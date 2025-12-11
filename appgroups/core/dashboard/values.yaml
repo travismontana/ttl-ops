@@ -11,4 +11,4 @@ annotations:
 tls:
   - secretName: "{{ .Values.clusterName }}-tls"
     hosts:
-      - "{{ .Values.clusterName }}.{{ .Values.domainname }}"
+      - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
