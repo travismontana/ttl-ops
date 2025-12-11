@@ -13,6 +13,7 @@ server:
     enabled: true
     hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
     path: /argocd
+    ingressClassName: traefik
     pathType: Prefix
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod

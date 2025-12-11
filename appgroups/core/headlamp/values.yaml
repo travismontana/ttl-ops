@@ -1,5 +1,6 @@
 ingress: 
   enabled: true
+  ingressClassName: traefik
   hosts:
     - host: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
       paths:
