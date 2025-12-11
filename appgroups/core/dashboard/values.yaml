@@ -1,14 +1,25 @@
 enabled: true
 className: traefik
 hosts:
-  - host: "{{ .Values.clusterName }}.anode"
+  - host: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
     paths:
       - path: /dashboard
         pathType: Prefix
 annotations:
   cert-manager.io/cluster-issuer: letsencrypt-prod
-  traefik.ingress.kubernetes.io/router.middlewares: dashboard-stripprefix@kubernetescrd
 tls:
-  - secretName: "{{ .Values.clusterName }}-tls"
+  - secretName: "wildcard-tls"
     hosts:
       - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+  path: /
+  pathType: Prefix
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  tls:
+    - secretName: "wildcard-tls"
+      hosts:
+        - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
