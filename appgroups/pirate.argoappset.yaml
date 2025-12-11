@@ -78,9 +78,14 @@ spec:
                 server: "{{.values.nfsServer}}"
                 path: "{{.values.nfsPath}}"
 
-            
             env:
               TZ: "{{.values.timezone}}"
+
+            appAuth:
+              enabled: true
+              method: "Basic"
+              username: "{{.app}}"
+              password: "{{.app}}"
 
             ingress:
               enabled: true

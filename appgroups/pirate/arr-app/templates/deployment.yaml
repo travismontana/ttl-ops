@@ -7,7 +7,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate  # SQLite databases don't handle multiple writers
+    type: Recreate
   selector:
     matchLabels:
       {{- include "arr-app.selectorLabels" . | nindent 6 }}
@@ -16,17 +16,16 @@ spec:
       labels:
         {{- include "arr-app.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
+      {{- if .Values.appAuth.enabled }}
+      initContainers:
+      - name: config-seed
+        image: busybox:latest
+        command: ["/bin/sh", "/scripts/seed-config.sh"]
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: config-seed
+          mountPath: /scripts
       {{- end }}
       containers:
       - name: {{ .Values.app.name }}
@@ -74,3 +73,9 @@ spec:
         nfs:
           server: {{ .Values.media.nfs.server }}
           path: {{ .Values.media.nfs.path }}
+      {{- if .Values.appAuth.enabled }}
+      - name: config-seed
+        configMap:
+          name: {{ include "arr-app.fullname" . }}-config-seed
+          defaultMode: 0755
+      {{- end }}
