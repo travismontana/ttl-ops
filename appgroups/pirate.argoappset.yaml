@@ -127,3 +127,7 @@ spec:
         kind: Deployment
         jqPathExpressions:
         - .spec.template.metadata.annotations."kubectl.kubernetes.io/restartedAt"
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - .metadata.labels:"app.kubernetes.io/name"
