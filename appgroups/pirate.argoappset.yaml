@@ -89,7 +89,7 @@ spec:
 
             ingress:
               enabled: true
-              ingressClassName: traefik
+              ingressClassName: pirate-traefik
               annotations:
                 cert-manager.io/cluster-issuer: letsencrypt-prod
               hosts:
