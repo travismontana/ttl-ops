@@ -11,7 +11,6 @@ server:
 
   ingress:
     enabled: true
-    ingressClassName: traefik
     hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
     path: /argocd
     pathType: Prefix
