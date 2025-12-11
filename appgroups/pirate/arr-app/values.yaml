@@ -47,7 +47,7 @@ resources:
 
 ingress:
   enabled: false
-  className: "traefik"
+  className: "pirate-traefik"
   annotations: {}
   hosts: []
   tls: []
