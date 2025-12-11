@@ -37,17 +37,15 @@ spec:
         - name: media
           mountPath: {{ .Values.media.mountPath }}
         livenessProbe:
-          httpGet:
-            path: /
-            port: http
+          tcpSocket:
+            port: {{ .Values.service.port }}
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
         readinessProbe:
-          httpGet:
-            path: /
-            port: http
+          tcpSocket:
+            port: {{ .Values.service.port }}
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 3
