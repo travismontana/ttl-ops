@@ -3,6 +3,7 @@ name: headlamp
 description: headlamp
 type: application
 version: 1.0.0
+namespace: kube-system
 
 
 dependencies:
