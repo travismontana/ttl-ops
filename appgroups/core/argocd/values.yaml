@@ -27,3 +27,6 @@ configs:
     server.basehref: /argocd
     server.rootpath: /argocd
     server.insecure: "true"
+
+certificates:
+  enabled: true
