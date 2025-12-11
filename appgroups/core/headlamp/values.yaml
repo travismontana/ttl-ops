@@ -14,3 +14,9 @@ ingress:
         - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
 config:
   baseURL: "https://{{ .Values.clusterName }}.{{ .Values.domainName }}"
+env:
+  - name: KUBERNETES_SERVICE_HOST
+    value: "localhost"
+  - name: KUBERNETES_SERVICE_PORT
+    value: "6443"
+
