@@ -27,8 +27,8 @@ config:
 
 media:
   nfs:
-    server: ""
-    path: ""
+    server: "a"
+    path: "a"
   mountPath: /media
 
 env:
