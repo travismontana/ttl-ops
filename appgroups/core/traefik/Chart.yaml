@@ -1,6 +1,6 @@
 apiVersion: v2
-name: traefik
-version: 0.1.0
+name: traefik-stack
+version: 0.1.1
 dependencies:
   - name: traefik
     version: "37.4.0"
