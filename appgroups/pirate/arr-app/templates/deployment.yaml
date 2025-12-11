@@ -16,17 +16,6 @@ spec:
       labels:
         {{- include "arr-app.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.appAuth.enabled }}
-      initContainers:
-      - name: config-seed
-        image: busybox:latest
-        command: ["/bin/sh", "/scripts/seed-config.sh"]
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: config-seed
-          mountPath: /scripts
-      {{- end }}
       containers:
       - name: {{ .Values.app.name }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -73,9 +62,3 @@ spec:
         nfs:
           server: {{ .Values.media.nfs.server }}
           path: {{ .Values.media.nfs.path }}
-      {{- if .Values.appAuth.enabled }}
-      - name: config-seed
-        configMap:
-          name: {{ include "arr-app.fullname" . }}-config-seed
-          defaultMode: 0755
-      {{- end }}
