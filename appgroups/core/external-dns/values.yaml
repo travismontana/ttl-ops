@@ -3,9 +3,9 @@ external-dns:
   aws:
     region: us-east-2
   txtOwnerId: ttl-ops
-  #domainFilters:
-  #  - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
-  #  - ".{{ .Values.clusterName }}.{{ .Values.domainName }}"
+  domainFilters:
+    - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+    - ".{{ .Values.clusterName }}.{{ .Values.domainName }}"
   policy: sync  # Creates & deletes records
   sources:
     - ingress
