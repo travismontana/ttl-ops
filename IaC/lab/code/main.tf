@@ -62,6 +62,15 @@ locals {
     clusters_data = jsondecode(file(var.clusterfile))
 }
 
+module "dnszones" {
+  source = "./modules/dnszones"
+  
+  parent_zone_id   = "Z096642825SZ7BHKNL1P0"  # Your tailandtraillabs.org zone ID
+  parent_zone_name = "tailandtraillabs.org"
+  subdomain_prefix = "abode"
+  clusters         = local.clusters_data.cluster
+}
+
 module "vms" {
     source = "./modules/vm"
 
