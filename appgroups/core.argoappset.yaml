@@ -35,9 +35,9 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}'
             - name: domainName
               value: '{{ index .metadata.labels "domainname" }}'
-            - name: domainFilters[0]
+            - name: external-dns.domainFilters[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: domainFilters[1]
+            - name: external-dns.domainFilters[1]
               value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
       syncPolicy:
         automated:
