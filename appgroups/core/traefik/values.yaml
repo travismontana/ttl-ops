@@ -3,11 +3,10 @@ ports:
     tls:
       enabled: true
   web:
-    redirections:
-      entryPoint:
-        to: websecure
-        permanent: true
-        scheme: https
+    port: 80
+    redirectTo:
+      entryPoint: websecure
+      permanent: true
 deployment:
   dnsConfig:
     nameservers:
