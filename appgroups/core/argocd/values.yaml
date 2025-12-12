@@ -1,5 +1,5 @@
 global:
-  domain: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+  domain: "argocd.{{ .Values.clusterName }}.{{ .Values.domainName }}"
   labels:
     ttl-ops/marco: polo
 
