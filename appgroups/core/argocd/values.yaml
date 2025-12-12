@@ -5,14 +5,12 @@ global:
 
 server:
   extraArgs:
-    - --basehref=/argocd
-    - --rootpath=/argocd
     - --insecure
 
   ingress:
     enabled: true
-    hostname: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
-    path: /argocd
+    hostname: "argocd.{{ .Values.clusterName }}.{{ .Values.domainName }}"
+    path: /
     ingressClassName: traefik
     pathType: Prefix
     annotations:
@@ -24,8 +22,6 @@ server:
 
 configs:
   params:
-    server.basehref: /argocd
-    server.rootpath: /argocd
     server.insecure: "true"
 
 certificates:

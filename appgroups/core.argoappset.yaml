@@ -39,6 +39,8 @@ spec:
               value: 'tailandtraillabs.org'
             - name: external-dns.domainFilters[1]
               value: '.tailandtraillabs.org'
+            - name: global.domain
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
       syncPolicy:
         automated:
           prune: true
