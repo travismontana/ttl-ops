@@ -2,7 +2,7 @@ apiVersion: v2
 name: external-dns-stack
 description: External DNS with cluster configuration
 type: application
-version: 1.0.0
+version: 1.0.1
 appVersion: "1.19.0"
 
 dependencies:
