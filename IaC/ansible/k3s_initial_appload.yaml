@@ -294,4 +294,4 @@
     - name: Install the core ApplicationSet
       when: is_first_control
       shell: |
-        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/appgroups/core.argoappset.yaml
+        kubectl apply -f https://raw.githubusercontent.com/travismontana/ttl-ops/refs/heads/main/bootstrap/argoappsets/core.app.yaml
