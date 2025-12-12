@@ -4,8 +4,8 @@ external-dns:
     region: us-east-2
   txtOwnerId: ttl-ops
   domainFilters:
-    - "{{ .Values.clusterName }}.abode.tailandtraillabs.org"
-    - ".{{ .Values.clusterName }}.abode.tailandtraillabs.org"
+    - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+    - ".{{ .Values.clusterName }}.{{ .Values.domainName }}"
   policy: sync  # Creates & deletes records
   sources:
     - ingress
