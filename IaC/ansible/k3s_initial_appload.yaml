@@ -183,8 +183,6 @@
                   hostname: "{{ cluster_name }}.{{ domainname}}"
                   path: /argocd
                   pathType: Prefix
-                  annotations:
-                    cert-manager.io/cluster-issuer: letsencrypt-prod
                   tls:
                     - secretName: "wildcard-tls"
                       hosts:
