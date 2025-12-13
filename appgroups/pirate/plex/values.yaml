@@ -10,8 +10,10 @@ plex:
       enabled: false
     extraData:
       - name: movies
+        enabled: true
         claimName: plex-movies-nfs
       - name: tv
+        enabled: true
         claimName: plex-tv-nfs
   service:
     dnla-tcp:
