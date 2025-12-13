@@ -122,6 +122,14 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
     size         = "32"
   }
 
+  disk {
+    datastore_id = "local-lvm"
+    interface    = "scsi1"
+    size         = 100  # 100GB
+    discard      = "on"  # Thin provisioning support
+    ssd          = true  # If local-lvm is on SSD
+  }
+
   initialization {
     ip_config {
       ipv4 {
