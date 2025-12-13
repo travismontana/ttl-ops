@@ -15,4 +15,6 @@ heimdall:
   persistence:
     config:
       enabled: true
-  
+  probes:
+    startup:
+      enabled: false 
