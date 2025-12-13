@@ -8,5 +8,5 @@ kubernetes-dashboard:
       paths:
         - /
       tls:
-        - secretName: wildcard-tls
+        secretName: wildcard-tls
     
