@@ -1,0 +1,12 @@
+apiVersion: v2
+name: rook-ceph-operator
+description: Rook-Ceph operator and CRDs
+type: application
+version: 1.0.0
+annotations:
+  argocd.argoproj.io/sync-wave: "1"  # Deploy first
+  
+dependencies:
+  - name: rook-ceph
+    version: "v1.18.8"
+    repository: https://charts.rook.io/release

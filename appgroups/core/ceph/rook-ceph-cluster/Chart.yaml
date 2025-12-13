@@ -1,0 +1,12 @@
+apiVersion: v2
+name: rook-ceph-cluster
+description: Rook-Ceph cluster instance
+type: application
+version: 1.0.0
+
+annotations:
+  argocd.argoproj.io/sync-wave: "2"  # Deploy after operator
+dependencies:
+  - name: rook-ceph-cluster
+    version: "v1.18.8"
+    repository: https://charts.rook.io/release
