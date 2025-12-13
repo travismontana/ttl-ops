@@ -36,9 +36,9 @@ spec:
             - name: domainName
               value: '{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[0]
-              value: 'tailandtraillabs.org'
+              value: '{{ index .metadata.labels "clustername" }}'.'{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[1]
-              value: '.tailandtraillabs.org'
+              value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: global.domain
               value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: external-dns.txtOwnerId  # <-- Add this
