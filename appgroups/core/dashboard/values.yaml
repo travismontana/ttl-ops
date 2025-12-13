@@ -7,7 +7,3 @@ kubernetes-dashboard:
         name: disabled
       paths:
         - /
-      tls:
-        - enabled: true
-          secretName: wildcard-tls
-    
