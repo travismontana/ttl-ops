@@ -6,12 +6,12 @@ heimdall:
           paths:
             - path: /
       ingressClassName: studio-traefik
-    annotations:
-      kubernetes.io/ingress.class: studio-traefik
-    tls:
-      - secretName: wildcard-tls
-        hosts:
-          - home.studio.abode.tailandtraillabs.org
+      annotations:
+        kubernetes.io/ingress.class: studio-traefik
+      tls:
+        - secretName: wildcard-tls
+          hosts:
+            - home.studio.abode.tailandtraillabs.org
   persistence:
     config:
       enabled: true
