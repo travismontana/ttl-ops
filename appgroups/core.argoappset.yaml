@@ -37,7 +37,7 @@ spec:
               value: '{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[0]
               value: 'tailandtraillabs.org'
-            - name: external-dns.domainFilters[1]
+            - name: external-dns.domainFilters[1]c
               value: '.tailandtraillabs.org'
             - name: global.domain
               value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
