@@ -55,3 +55,7 @@ ingress:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+sabnzbd:
+  config:
+    host_whitelist: "sabnzbd.pirate.abode.tailandtraillabs.org, sabnzbd, localhost"
