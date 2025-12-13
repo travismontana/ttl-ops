@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: studio-applicationset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+  - matrix:
+      generators:
+      - clusters:
+          selector:
+            matchLabels:
+              argocd.argoproj.io/secret-type: cluster
+              appgroup/studio: "true"
+      - git:
+          repoURL: https://github.com/travismontana/ttl-ops
+          revision: HEAD
+          directories:
+          - path: appgroups/studio/*
+  template:
+    metadata:
+      name: '{{.name}}-{{.path.basename}}'
+    spec:
+      project: default
+      destination:
+        namespace: '{{.path.basename}}'
+        server: '{{.server}}'
+      source:
+        repoURL: https://github.com/travismontana/ttl-ops
+        targetRevision: HEAD
+        path: 'appgroups/studio/{{.path.basename}}'
+        helm:
+          parameters:
+            - name: clusterName
+              value: '{{ index .metadata.labels "clustername" }}'
+            - name: domainName
+              value: '{{ index .metadata.labels "domainname" }}'
+            - name: external-dns.domainFilters[0]
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: external-dns.domainFilters[1]
+              value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: global.domain
+              value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: external-dns.txtOwnerId
+              value: '{{ index .metadata.labels "clustername" }}'
+            - name: app.ingress.hosts[0]
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: app.ingress.ingressClassName
+              value: '{{ index .metadata.labels "clustername" }}-traefik'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
