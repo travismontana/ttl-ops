@@ -45,6 +45,8 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}'
             - name: app.ingress.hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: app.ingress.ingressClassName
+              value: '{{ index .metadata.labels "clustername" }}-traefik'
       syncPolicy:
         automated:
           prune: true
