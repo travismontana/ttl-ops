@@ -8,3 +8,4 @@ version: 1.0.0
 dependencies:
   - name: jellyfin
     repository: https://jellyfin.github.io/jellyfin-helm
+    version: jellyfin-2.6.0
