@@ -1,6 +1,7 @@
 app:
   ingress:
     enabled: true
+    useDefaultIngressClass: true
     issuer:
       name: disabled
     paths:
