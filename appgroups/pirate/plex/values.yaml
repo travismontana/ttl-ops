@@ -1,0 +1,10 @@
+persistence:
+  config:
+    enabled: true
+  transcode:
+    enabled: true
+service:
+  dnla-tcp:
+    enabled: true
+  dnla-udp:
+    enabled: true

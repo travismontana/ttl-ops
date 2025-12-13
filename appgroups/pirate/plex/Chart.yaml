@@ -1,0 +1,11 @@
+apiVersion: v2
+name: plex-stack
+description: Plex media server
+type: application
+version: 1.0.0
+appVersion: "6.4.3"
+
+dependencies:
+  - name: plex
+    repository: https://k8s-at-home.com/charts/
+    version: 6.4.3

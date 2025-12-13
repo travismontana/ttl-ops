@@ -32,9 +32,6 @@ spec:
           - app: prowlarr
             port: "9696"
             image: linuxserver/prowlarr
-          - app: plex
-            port: "32400"
-            image: linuxserver/plex   
       
       # Second dimension: Clusters with media label
       - clusters:
