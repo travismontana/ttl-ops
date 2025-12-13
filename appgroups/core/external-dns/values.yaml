@@ -26,3 +26,5 @@ external-dns:
           key: aws-secret-access-key
     - name: AWS_REGION
       value: us-east-2
+  args:
+    - --publish-internal-services  # ADD THIS
