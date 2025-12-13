@@ -1,26 +1,22 @@
-ports:
-  websecure:
-    tls:
-      enabled: true
-  web:
-    port: 80
-    redirectTo:
-      entryPoint: websecure
-      permanent: true
-deployment:
-  dnsConfig:
-    nameservers:
-      - 172.16.2.23
-    searches:
-      - hangar.bpfx.org
-      - tailandtraillabs.org
-service:
-  type: LoadBalancer
-ingressRoute:
-  dashboard:
-    enabled: false
-ingressClass:
-  enabled: true
-  isDefaultClass: true
-  name: traefik
-  
+traefik:
+  ports:
+    websecure:
+      tls:
+        enabled: true
+    web:
+      port: 80
+      redirectTo:
+        entryPoint: websecure
+        permanent: true
+  deployment:
+    dnsConfig:
+      nameservers:
+        - 172.16.2.23
+      searches:
+        - hangar.bpfx.org
+        - tailandtraillabs.org
+  service:
+    type: LoadBalancer
+  ingressRoute:
+    dashboard:
+      enabled: false
