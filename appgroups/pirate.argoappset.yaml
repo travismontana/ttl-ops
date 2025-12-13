@@ -91,7 +91,7 @@ spec:
               enabled: true
               ingressClassName: pirate-traefik
               hosts:
-                - host: a.{{.app}}.{{.name}}.{{.values.domain}}
+                - host: {{.app}}.{{.name}}.{{.values.domain}}
                   paths:
                     - path: /
                       pathType: Prefix
