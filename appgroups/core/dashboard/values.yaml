@@ -1,11 +1,12 @@
-app:
-  ingress:
-    enabled: true
-    useDefaultIngressClass: true
-    issuer:
-      name: disabled
-    paths:
-      - /
-    tls:
-      - secretName: wildcard-tls
+kubernetes-dashboard:
+  app:
+    ingress:
+      enabled: true
+      useDefaultIngressClass: true
+      issuer:
+        name: disabled
+      paths:
+        - /
+      tls:
+        - secretName: wildcard-tls
     
