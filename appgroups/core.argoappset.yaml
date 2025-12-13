@@ -41,11 +41,11 @@ spec:
               value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: kubernetes-dashboard.app.ingress.hosts[1]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: kubernetes-dashboard.app.ingress.tls[0].hosts[0]
+            - name: kubernetes-dashboard.app.ingress.tls.hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: kubernetes-dashboard.app.ingress.tls[0].secretName
+            - name: kubernetes-dashboard.app.ingress.tls.secretName
               value: 'wildcard-tls'
-            - name: kubernetes-dashboard.app.ingress.tls[0].enabled
+            - name: kubernetes-dashboard.app.ingress.tls.enabled
               value: 'true'
             - name: kubernetes-dashboard.app.ingress.ingressClassName
               value: '{{ index .metadata.labels "clustername" }}-traefik'
