@@ -32,9 +32,10 @@ spec:
           - app: prowlarr
             port: "9696"
             image: linuxserver/prowlarr
-          - app: readarr
-            port: "8787"
-            image: linuxserver/readarr
+          - app: whisparr
+            port: "6969"
+            image: linuxserver/whisparr
+
           
       
       # Second dimension: Clusters with media label
