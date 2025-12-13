@@ -5,13 +5,14 @@ plex:
     transcode:
       enabled: true
       storageClass: local-path
-  data:
-    enabled: false
-  extraData:
-    - name: movies
-      claimName: plex-movies-nfs
-    - name: tv
-      claimName: plex-tv-nfs
+      accessMode: ReadWriteOnce
+    data:
+      enabled: false
+    extraData:
+      - name: movies
+        claimName: plex-movies-nfs
+      - name: tv
+        claimName: plex-tv-nfs
   service:
     dnla-tcp:
       enabled: true
