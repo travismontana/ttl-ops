@@ -31,6 +31,8 @@ spec:
           value: {{ .Values.env.PUID | quote }}
         - name: PGID
           value: {{ .Values.env.PGID | quote }}
+        - name: HOST_WHITELIST_ENTRIES  
+          value: {{ .Values.env.HOST_WHITELIST_ENTRIES | quote }}
         volumeMounts:
         - name: config
           mountPath: /config
