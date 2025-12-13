@@ -8,3 +8,15 @@ service:
     enabled: true
   dnla-udp:
     enabled: true
+ingress:
+  main:
+    enabled: true
+    hosts:
+      - host: plex.pirate.abode.tailandtaillabs.org
+        paths:
+          - /
+    tls:
+      - secretName: wildcard-tls
+        hosts:
+          - plex.pirate.abode.tailandtaillabs.org
+hostNetwork: true
