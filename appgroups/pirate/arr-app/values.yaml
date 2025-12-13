@@ -59,3 +59,14 @@ affinity: {}
 sabnzbd:
   config:
     host_whitelist: "sabnzbd.pirate.abode.tailandtraillabs.org, sabnzbd, localhost"
+
+persistence:
+  config:
+    enabled: true
+  transcode:
+    enabled: true
+service:
+  dnla-tcp:
+    enabled: true
+  dnla-udp:
+    enabled: true
