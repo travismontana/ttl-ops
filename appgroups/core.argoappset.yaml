@@ -45,11 +45,11 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}'
             - name: app.ingress.hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+      syncPolicy:
         automated:
           prune: true
           selfHeal: true
           allowEmpty: false
-      syncPolicy:
         syncOptions:
           - CreateNamespace=true
           - PrunePropagationPolicy=foreground
