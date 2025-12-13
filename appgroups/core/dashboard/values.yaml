@@ -2,7 +2,7 @@ kubernetes-dashboard:
   app:
     ingress:
       enabled: true
-      useDefaultIngressClass: true
+      useDefaultAnnotations: false
       issuer:
         name: disabled
       paths:
