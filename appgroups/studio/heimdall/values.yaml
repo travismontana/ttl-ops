@@ -1,13 +1,14 @@
 heimdall:
-  ingress:
-    enabled: true
-    hosts:
-      - host: home.studio.abode.tailandtraillabs.org
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    ingressClassName: studio-traefik
-    tls:
-      - secretName: wildcard-tls
-        hosts:
-          - home.studio.abode.tailandtraillabs.org
+  main:
+    ingress:
+      enabled: true
+      hosts:
+        - host: home.studio.abode.tailandtraillabs.org
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      ingressClassName: studio-traefik
+      tls:
+        - secretName: wildcard-tls
+          hosts:
+            - home.studio.abode.tailandtraillabs.org
