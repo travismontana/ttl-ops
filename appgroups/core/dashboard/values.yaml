@@ -7,3 +7,5 @@ kubernetes-dashboard:
         name: disabled
       paths:
         - /
+      annotations:
+        traefik.ingress.kubernetes.io/service.serversscheme: https  # ADD THIS
