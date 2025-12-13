@@ -45,7 +45,9 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}'  # Use cluster name
             - name: headlamp.spec.rules[0].host
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: headlamp.spec.tls.host
+            - name: headlamp.ingress.tls[0].hosts[0]
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: headlamp.ingress.hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
         automated:
           prune: true
