@@ -26,6 +26,16 @@ spec:
           - app: lidarr
             port: "8686"
             image: linuxserver/lidarr
+          - app: sabnzbd
+            port: "8080"
+            image: linuxserver/sabnzbd
+          - app: prowlarr
+            port: "9696"
+            image: linuxserver/prowlarr
+          - app: readarr
+            port: "8787"
+            image: linuxserver/readarr
+          
       
       # Second dimension: Clusters with media label
       - clusters:
