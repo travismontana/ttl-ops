@@ -9,3 +9,4 @@ kubernetes-dashboard:
         - /
       annotations:
         traefik.ingress.kubernetes.io/service.serversscheme: https  # ADD THIS
+        traefik.ingress.kubernetes.io/service.insecureskipverify: "true"
