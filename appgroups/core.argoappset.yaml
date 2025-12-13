@@ -43,10 +43,6 @@ spec:
               value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: external-dns.txtOwnerId
               value: '{{ index .metadata.labels "clustername" }}'
-            - name: headlamp.ingress.tls[0].hosts[0]
-              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: headlamp.ingress.hosts[0].host
-              value: 'headlamp.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: app.ingress.hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
         automated:
