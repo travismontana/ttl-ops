@@ -1,5 +1,5 @@
 rook-ceph-cluster:
-  operatorNamespace: rook-ceph
+  operatorNamespace: rook-ceph-operator
   
   cephClusterSpec:
     cephVersion:
