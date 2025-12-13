@@ -1,7 +1,6 @@
 heimdall:
-  main:
-    ingress:
-      enabled: true
+  ingress:
+    main:
       hosts:
         - host: home.studio.abode.tailandtraillabs.org
           paths:
@@ -13,3 +12,7 @@ heimdall:
       - secretName: wildcard-tls
         hosts:
           - home.studio.abode.tailandtraillabs.org
+  persistence:
+    config:
+      enabled: true
+  
