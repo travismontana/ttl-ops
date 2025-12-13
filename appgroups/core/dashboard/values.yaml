@@ -1,0 +1,10 @@
+app:
+  ingress:
+    enabled: true
+    issuer:
+      name: disabled
+    paths:
+      - /
+    tls:
+      - secretName: wildcard-tls
+    

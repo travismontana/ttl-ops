@@ -1,0 +1,11 @@
+apiVersion: v2
+name: dashaboard-stack
+description: Cert-manager with cluster configuration
+type: application
+version: 1.0.0
+appVersion: "7.14.0"
+
+dependencies:
+  - name: kubernetes-dashboard
+    version: 7.14.0
+    repository: https://kubernetes.github.io/dashboard/

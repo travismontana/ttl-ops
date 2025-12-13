@@ -47,6 +47,8 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: headlamp.ingress.hosts[0].host
               value: 'headlamp.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+            - name: app.ingress.hosts[0]
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
         automated:
           prune: true
           selfHeal: true
