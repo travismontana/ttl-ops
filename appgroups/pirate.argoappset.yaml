@@ -91,6 +91,7 @@ spec:
 
             env:
               TZ: "{{.values.timezone}}"
+              HOST_WHITELIST_ENTRIES: "{{.app}}.{{.name}}.{{.values.domain}}"
 
             appAuth:
               enabled: true
