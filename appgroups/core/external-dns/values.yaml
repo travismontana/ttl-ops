@@ -2,7 +2,6 @@ external-dns:
   provider: aws
   aws:
     region: us-east-2
-  txtOwnerId: ttl-ops
   policy: sync  # Creates & deletes records
   sources:
     - ingress
