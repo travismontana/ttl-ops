@@ -69,16 +69,3 @@ rook-ceph-cluster:
         enabled: true
         name: rook-ceph-bucket
         reclaimPolicy: Delete
-  
-  cephBlockPools:
-    - name: replicapool
-      spec:
-        failureDomain: host
-        replicated:
-          size: 2
-      storageClass:
-        enabled: true
-        name: rook-ceph-block
-        isDefault: false
-        reclaimPolicy: Delete
-        allowVolumeExpansion: true
