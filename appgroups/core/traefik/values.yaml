@@ -5,9 +5,12 @@ traefik:
         enabled: true
     web:
       port: 80
-      redirectTo:
-        entryPoint: websecure
-        permanent: true
+      http:                              # ← NEW: http block
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https                # ← ADDED: explicit scheme
+            permanent: true
   deployment:
     dnsConfig:
       nameservers:
