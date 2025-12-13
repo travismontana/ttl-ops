@@ -43,9 +43,9 @@ spec:
               value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: external-dns.txtOwnerId  # <-- Add this
               value: '{{ index .metadata.labels "clustername" }}'  # Use cluster name
-            - name: headlamp.ingress.tls[0].hosts[0].host
+            - name: headlamp.ingress.tls[0].hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: headlamp.ingress.hosts[0]
+            - name: headlamp.ingress.hosts[0].host
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
         automated:
           prune: true
