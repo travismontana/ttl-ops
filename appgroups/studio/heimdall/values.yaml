@@ -1,6 +1,7 @@
 heimdall:
   ingress:
     main:
+      enabled: true
       hosts:
         - host: home.studio.abode.tailandtraillabs.org
           paths:
