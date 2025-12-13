@@ -1,15 +1,14 @@
-headlamp:
-  ingress: 
-    enabled: true
-    hosts:
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: "wildcard-tls"
-  env:
-    - name: KUBERNETES_SERVICE_HOST
-      value: "localhost"
-    - name: KUBERNETES_SERVICE_PORT
-      value: "6443"
+ingress: 
+  enabled: true
+  hosts:
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: "wildcard-tls"
+env:
+  - name: KUBERNETES_SERVICE_HOST
+    value: "localhost"
+  - name: KUBERNETES_SERVICE_PORT
+    value: "6443"
 
