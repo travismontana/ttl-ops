@@ -36,7 +36,7 @@ spec:
             - name: domainName
               value: '{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[0]
-              value: '{{ index .metadata.labels "clustername" }}'.'{{ index .metadata.labels "domainname" }}'
+              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[1]
               value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: global.domain
