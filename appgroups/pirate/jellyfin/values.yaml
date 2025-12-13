@@ -4,7 +4,8 @@ jellyfin:
     hosts:
       - host: jellyfin.pirate.abode.tailandtraillabs.org
         paths:
-          - /
+          - path: /
+            pathType: ImplementationSpecific
     tls:
       - secretName: wildcard-tls
         hosts:
