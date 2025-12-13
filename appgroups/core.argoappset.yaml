@@ -41,8 +41,8 @@ spec:
               value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: global.domain
               value: 'argocd.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: external-dns.txtOwnerId  # <-- Add this
-              value: '{{ index .metadata.labels "clustername" }}'  # Use cluster name
+            - name: external-dns.txtOwnerId
+              value: '{{ index .metadata.labels "clustername" }}'
             - name: headlamp.spec.rules[0].http.paths
               value: '/'
             - name: headlamp.ingress.tls[0].hosts[0]
