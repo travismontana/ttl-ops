@@ -1,19 +1,20 @@
-ingress: 
-  enabled: true
-  hosts:
-    - host: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: "wildcard-tls"
-      hosts:
-        - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
-config:
-  baseURL: "https://{{ .Values.clusterName }}.{{ .Values.domainName }}"
-env:
-  - name: KUBERNETES_SERVICE_HOST
-    value: "localhost"
-  - name: KUBERNETES_SERVICE_PORT
-    value: "6443"
+headlamp:
+  ingress: 
+    enabled: true
+    hosts:
+      - host: "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: "wildcard-tls"
+        hosts:
+          - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
+  config:
+    baseURL: "https://{{ .Values.clusterName }}.{{ .Values.domainName }}"
+  env:
+    - name: KUBERNETES_SERVICE_HOST
+      value: "localhost"
+    - name: KUBERNETES_SERVICE_PORT
+      value: "6443"
 
