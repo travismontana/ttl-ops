@@ -1,0 +1,16 @@
+jellyfin:
+  ingress:
+    enabled: true
+    hosts:
+      - host: jellyfin.pirate.abode.tailandtraillabs.org
+        paths:
+          - /
+    tls:
+      - secretName: wildcard-tls
+        hosts:
+          - jellyfin.pirate.abode.tailandtraillabs.org
+  persistence:
+    storageClass: local-path
+  media:
+    enabled: true
+    existingClaim: "plex-media-nfs"

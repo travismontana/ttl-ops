@@ -1,0 +1,36 @@
+persistence:
+  config:
+    enabled: true
+  transcode:
+    enabled: true
+    storageClass: local-path
+    accessMode: ReadWriteOnce
+  data:
+    enabled: true
+    storageClass: local-path
+    accessMode: ReadWriteOnce
+    size: 20Gi
+  extraData:
+    - name: movies
+      enabled: true
+      claimName: plex-movies-nfs
+    - name: tv
+      enabled: true
+      claimName: plex-tv-nfs
+service:
+  dnla-tcp:
+    enabled: true
+  dnla-udp:
+    enabled: true
+ingress:
+  main:
+    enabled: true
+    hosts:
+      - host: plex.pirate.abode.tailandtaillabs.org
+        paths:
+          - /
+    tls:
+      - secretName: wildcard-tls
+        hosts:
+          - plex.pirate.abode.tailandtaillabs.org
+hostNetwork: true

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: jellyfin-stack
+description: Jellyfin media server
+type: application
+version: 1.0.0
+
+
+dependencies:
+  - name: jellyfin
+    repository: https://jellyfin.github.io/jellyfin-helm
