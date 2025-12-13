@@ -1,0 +1,21 @@
+apiVersion: v2
+name: ceph-rook-stack
+description: Rook
+type: application
+version: 1.0.0
+
+dependencies:
+  # Rook-Ceph operator
+  - name: rook-ceph
+    version: "v1.18.8"
+    repository: https://charts.rook.io/release
+    condition: rook-ceph.enabled
+  
+  # Rook-Ceph cluster
+  - name: rook-ceph-cluster
+    version: "v1.18.8"
+    repository: https://charts.rook.io/release
+    condition: rook-ceph-cluster.enabled
+    # Wait for operator to be ready
+    tags:
+      - storage

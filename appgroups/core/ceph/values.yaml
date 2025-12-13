@@ -1,0 +1,130 @@
+# Enable/disable Rook-Ceph
+rook-ceph:
+  enabled: true
+  crds:
+    enabled: true
+  
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Disable CSI features you don't need
+  csi:
+    enableRbdDriver: true
+    enableCephfsDriver: false  # Disable if you only need block/object
+    enableGrpcMetrics: false
+  
+  monitoring:
+    enabled: true
+
+rook-ceph-cluster:
+  enabled: true
+  
+  operatorNamespace: rook-ceph
+  
+  cephClusterSpec:
+    cephVersion:
+      image: quay.io/ceph/ceph:v18.2.4
+      allowUnsupported: false
+    
+    dataDirHostPath: /var/lib/rook
+    
+    mon:
+      count: 3
+      allowMultiplePerNode: false
+    
+    mgr:
+      count: 2
+      modules:
+        - name: pg_autoscaler
+          enabled: true
+        - name: prometheus
+          enabled: true
+    
+    dashboard:
+      enabled: true
+      ssl: false
+    
+    monitoring:
+      enabled: true
+    
+    crashCollector:
+      disable: false
+    
+    # IMPORTANT: Configure for your cluster size
+    storage:
+      useAllNodes: true
+      useAllDevices: false
+      deviceFilter: "^sdb$"  # Match the disk we added in Proxmox TF
+    
+    resources:
+      mgr:
+        limits:
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "512Mi"
+      mon:
+        limits:
+          memory: "2Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+      osd:
+        limits:
+          memory: "4Gi"
+        requests:
+          cpu: "1000m"
+          memory: "2Gi"
+  
+  # Create block pool for RBD
+  cephBlockPools:
+    - name: replicapool
+      spec:
+        failureDomain: host
+        replicated:
+          size: 2  # 2x replication for home lab
+        parameters:
+          compression_mode: none  # Or "aggressive" to save space
+      storageClass:
+        enabled: true
+        name: rook-ceph-block
+        isDefault: false
+        reclaimPolicy: Delete
+        allowVolumeExpansion: true
+        parameters:
+          imageFormat: "2"
+          imageFeatures: layering
+          csi.storage.k8s.io/fstype: ext4
+  
+  # Create object store for S3
+  cephObjectStores:
+    - name: cv-storage
+      spec:
+        metadataPool:
+          failureDomain: host
+          replicated:
+            size: 2
+        dataPool:
+          failureDomain: host
+          replicated:
+            size: 2
+        preservePoolsOnDelete: false
+        gateway:
+          port: 80
+          instances: 2
+          resources:
+            limits:
+              memory: "2Gi"
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+      storageClass:
+        enabled: true
+        name: rook-ceph-bucket
+        reclaimPolicy: Delete
+        parameters:
+          region: us-east-1  # Fake region for S3 compatibility
