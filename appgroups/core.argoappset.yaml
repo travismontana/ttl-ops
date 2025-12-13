@@ -46,7 +46,7 @@ spec:
             - name: headlamp.spec.rules[0].host
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: headlamp.spec.tls[0].hosts[0]
-              value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+              value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: headlamp.spec.tls[0].hosts[1]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
         automated:
