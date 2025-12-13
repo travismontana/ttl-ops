@@ -7,7 +7,6 @@ external-dns:
   sources:
     - ingress
     - service
-    - traefik-proxy  # For Traefik IngressRoute
   crd:
     create: false  # Traefik CRDs already exist
     apiversion: traefik.io/v1alpha1
