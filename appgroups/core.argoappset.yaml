@@ -39,7 +39,7 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: external-dns.domainFilters[1]
               value: '.{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
-            - name: kubernetes-dashboard.app.ingress.hosts[0]
+            - name: kubernetes-dashboard.app.ingress.hosts[1]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: kubernetes-dashboard.app.ingress.ingressClassName
               value: '{{ index .metadata.labels "clustername" }}-traefik'
