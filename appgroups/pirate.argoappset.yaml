@@ -16,31 +16,31 @@ spec:
           elements:
           - app: sonarr
             port: "8989"
-            image: linuxserver/sonarr
+            image: lscr.io/linuxserver/sonarr
           - app: radarr
             port: "7878"
-            image: linuxserver/radarr
+            image: lscr.io/linuxserver/radarr
           - app: bazarr
             port: "6767"
-            image: linuxserver/bazarr
+            image: lscr.io/linuxserver/bazarr
           - app: lidarr
             port: "8686"
-            image: linuxserver/lidarr
+            image: lscr.io/linuxserver/lidarr
           - app: sabnzbd
             port: "8080"
-            image: linuxserver/sabnzbd
+            image: lscr.io/linuxserver/sabnzbd
           - app: prowlarr
             port: "9696"
-            image: linuxserver/prowlarr
+            image: lscr.io/linuxserver/prowlarr
           - app: tautulli
             port: "8181"
-            image: linuxserver/tautulli
+            image: lscr.io/linuxserver/tautulli
           - app: overseerr
             port: "5055"
-            image: linuxserver/overseerr
+            image: lscr.io/linuxserver/overseerr
           - app: maintainerr
             port: "6246"
-            image: maintainerr/maintainerr
+            image: ghcr.io/maintainerr/maintainerr
 
 
       # Second dimension: Clusters with media label
