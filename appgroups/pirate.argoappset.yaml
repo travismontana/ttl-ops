@@ -40,7 +40,7 @@ spec:
             image: linuxserver/overseerr
           - app: maintainerr
             port: "6246"
-            image: linuxserver/maintainerr
+            image: home-ops/maintainerr
 
 
       # Second dimension: Clusters with media label
