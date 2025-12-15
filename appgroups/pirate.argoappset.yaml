@@ -32,7 +32,13 @@ spec:
           - app: prowlarr
             port: "9696"
             image: linuxserver/prowlarr
-      
+          - app: requestarr
+            port: "4545"
+            image: linuxserver/requestarr
+          - app: overseerr
+            port: "5055"
+            image: linuxserver/overseerr
+
       # Second dimension: Clusters with media label
       - clusters:
           selector:
