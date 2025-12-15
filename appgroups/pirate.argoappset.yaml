@@ -38,6 +38,10 @@ spec:
           - app: overseerr
             port: "5055"
             image: linuxserver/overseerr
+          - app: maintainerr
+            port: "6246"
+            image: linuxserver/maintainerr
+
 
       # Second dimension: Clusters with media label
       - clusters:
