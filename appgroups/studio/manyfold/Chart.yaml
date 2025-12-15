@@ -1,0 +1,12 @@
+apiVersion: v2
+name: manyfold-stack
+description: Manyfold application stack
+type: application
+version: 1.0.0
+appVersion: "0.4.0"
+
+
+dependencies:
+  - name: manyfold
+    repository: https://self-hosters-by-night.github.io/helm-charts
+    version: 0.4.0

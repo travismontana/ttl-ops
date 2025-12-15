@@ -1,0 +1,15 @@
+manyfold:
+  ingress:
+    main:
+      enabled: true
+      hosts:
+        - host: manyfold.studio.abode.tailandtraillabs.org
+          paths:
+            - path: /
+      ingressClassName: studio-traefik
+      annotations:
+        kubernetes.io/ingress.class: studio-traefik
+      tls:
+        - secretName: wildcard-tls
+          hosts:
+            - manyfold.studio.abode.tailandtraillabs.org
