@@ -12,7 +12,7 @@ appAuth:
 
 image:
   name: ""
-  registry: ""
+  registry: lscr.io
   repository: ""
   tag: latest
   pullPolicy: IfNotPresent
