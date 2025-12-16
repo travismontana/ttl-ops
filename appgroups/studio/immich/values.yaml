@@ -1,23 +1,24 @@
 immich:
-  metrics:
-    enabled: true
-  valkey:
-    enabled: true
-  persistence:
-    library:
-      existingClaim: immich-data
-  server:
-    ingress:
-      main:
-        enabled: true
-        hosts:
-          - host: img.studio.abode.tailandtraillabs.org
-            paths:
-              - path: /
-        ingressClassName: studio-traefik
-        annotations:
-          kubernetes.io/ingress.class: studio-traefik
-        tls:
-          - secretName: wildcard-tls
-            hosts:
-              - img.studio.abode.tailandtraillabs.org
+  immich:
+    metrics:
+      enabled: true
+    valkey:
+      enabled: true
+    persistence:
+      library:
+        existingClaim: immich-data
+    server:
+      ingress:
+        main:
+          enabled: true
+          hosts:
+            - host: img.studio.abode.tailandtraillabs.org
+              paths:
+                - path: /
+          ingressClassName: studio-traefik
+          annotations:
+            kubernetes.io/ingress.class: studio-traefik
+          tls:
+            - secretName: wildcard-tls
+              hosts:
+                - img.studio.abode.tailandtraillabs.org
