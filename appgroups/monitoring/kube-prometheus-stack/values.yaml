@@ -1,0 +1,4 @@
+namespaceOverride: monitoring
+crds:
+  upgradeJob:
+    enabled: true
