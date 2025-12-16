@@ -7,7 +7,7 @@ immich:
             DB_HOSTNAME: immichdb-rw.cloudnative-pg.svc.cluster.local
             DB_PORT: "5432"
             DB_USERNAME: app
-            DB_DATABASE_NAME: app
+            DB_DATABASE_NAME: immichdb-app
             DB_PASSWORD:
               valueFrom:
                 secretKeyRef:
