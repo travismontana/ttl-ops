@@ -15,10 +15,10 @@ immich:
         size: 1Gi
   env:
     DB_HOSTNAME: studiodb-rw.cloudnative-pg.svc.cluster.local
-     DB_PORT: "5432"
-     DB_USERNAME: app
-     DB_DATABASE_NAME: app
-     DB_PASSWORD:
+    DB_PORT: "5432"
+    DB_USERNAME: app
+    DB_DATABASE_NAME: app
+    DB_PASSWORD:
       valueFrom:
         secretKeyRef:
           name: studiodb-app
