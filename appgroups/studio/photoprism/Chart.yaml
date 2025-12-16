@@ -1,0 +1,12 @@
+apiVersion: v2
+name: photo-prism-stack
+description: Photo Prism application stack
+type: application
+version: 1.0.0
+appVersion: "251130"
+
+
+dependencies:
+  - name: photoprism-plus
+    repository: https://charts.photoprism.app/photoprism 
+    version: 1.0.1+251130-b3068414c
