@@ -3,6 +3,9 @@ immich:
     enabled: true
   valkey:
     enabled: true
+  persistence:
+    library:
+      existingClaim: immich-data
   server:
     ingress:
       main:
