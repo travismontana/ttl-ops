@@ -23,7 +23,7 @@ immich:
           enabled: true
           size: 10Gi
     
-    # Your existing persistence
+    # Your existing persistenc
     persistence:
       library:
         existingClaim: immich-data
