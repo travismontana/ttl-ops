@@ -4,7 +4,7 @@ immich:
       containers:
         main:
           env:
-            DB_HOSTNAME: studiodb-rw.cloudnative-pg.svc.cluster.local
+            DB_HOSTNAME: immichdb-rw.cloudnative-pg.svc.cluster.local
             DB_PORT: "5432"
             DB_USERNAME: app
             DB_DATABASE_NAME: app
