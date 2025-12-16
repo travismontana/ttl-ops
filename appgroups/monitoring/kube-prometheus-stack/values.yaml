@@ -2,3 +2,57 @@ kube-prometheus-stack:
   crds:
     upgradeJob:
       enabled: true
+  alertmanager:
+    enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: monitoring-traefik
+      annotations:
+        kubernetes.io/ingress.class: monitoring-traefik
+      hosts:
+        - alertmanager.monitoring.abode.tailandtraillabs.org
+      tls:
+        - secretName: alertmanager-tls
+          hosts:
+            - alertmanager.monitoring.abode.tailandtraillabs.org
+    config:
+      global:
+        resolve_timeout: 5m
+      route:
+        group_by: ['alertname']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        receiver: 'default-receiver'
+      receivers:
+        - name: 'default-receiver'
+          email_configs:
+            - to: '
+  grafana:
+    enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: monitoring-traefik
+      annotations:
+        kubernetes.io/ingress.class: monitoring-traefik
+      hosts:
+        - grafana.monitoring.abode.tailandtraillabs.org
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.monitoring.abode.tailandtraillabs.org
+    adminUser: admin
+    adminPassword: admin
+  prometheus:
+    enabled: true
+    ingress:
+      enabled: true
+      ingressClassName: monitoring-traefik
+      annotations:
+        kubernetes.io/ingress.class: monitoring-traefik
+      hosts:
+        - prometheus.monitoring.abode.tailandtraillabs.org
+      tls:
+        - secretName: prometheus-tls
+          hosts:
+            - prometheus.monitoring.abode.tailandtraillabs.org  
