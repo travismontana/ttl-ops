@@ -14,21 +14,6 @@ immich:
         enabled: true
         size: 1Gi
   
-  # Enable PostgreSQL
-  postgresql:
-    enabled: true
-    auth:
-      username: immich
-      password: immich
-      database: immich
-    primary:
-      persistence:
-        enabled: true
-        size: 10Gi
-  
-  # Your existing persistenc
-
-  
   # Your existing ingress
   server:
     ingress:
