@@ -40,6 +40,25 @@ spec:
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
             - name: ingress.main.tls[0].hosts[0]
               value: '{{ index .metadata.labels "clustername" }}.{{ index .metadata.labels "domainname" }}'
+
       syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
+          - PrunePropagationPolicy=foreground
+          - PruneLast=true
+        retry:
+          limit: 5
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+      
+      ignoreDifferences:
+      - group: apps
+        kind: Deployment
+        jqPathExpressions:
+        - .spec.template.metadata.annotations."kubectl.kubernetes.io/restartedAt"
