@@ -1,0 +1,49 @@
+portainer:
+  # Service configuration
+  service:
+    type: ClusterIP
+    httpPort: 9000
+    httpsPort: 9443
+    edgePort: 8000
+
+  # Persistence for Portainer data
+  persistence:
+    storageClass: "local-path"  # adjust to your storage class
+    size: 10Gi
+    annotations: {}
+
+  # Ingress configuration
+  ingress:
+    enabled: true
+    ingressClassName: monitoring-traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: portainer.monitoring.abode.tailandtraillabs.org
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: portainer-tls
+        hosts:
+          - portainer.monitoring.abode.tailandtraillabs.org
+
+  # Resources
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  # Feature flags
+  featureFlags:
+    - --hide-label io.portainer.kubernetes.application.stack=true
