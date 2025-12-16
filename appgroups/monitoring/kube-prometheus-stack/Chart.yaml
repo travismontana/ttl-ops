@@ -3,7 +3,7 @@ name: kube-prometheus-stack
 description: kube-prometheus-stack
 type: application
 version: 0.1.0
-appVersion: "latest"
+appVersion: "80.4.1"
 
 dependencies:
   - name: kube-prometheus-stack
