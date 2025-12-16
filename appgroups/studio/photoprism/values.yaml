@@ -14,9 +14,3 @@ photoprism-plus:
         - secretName: wildcard-tls
           hosts:
             - img.studio.abode.tailandtraillabs.org
-  persistence:
-    config:
-      enabled: true
-  probes:
-    startup:
-      enabled: false
