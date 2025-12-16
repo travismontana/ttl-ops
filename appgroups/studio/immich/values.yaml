@@ -2,11 +2,33 @@ immich:
   immich:
     metrics:
       enabled: false
+    
+    # Enable Valkey (Redis)
     valkey:
-      enabled: false
+      enabled: true
+      master:
+        persistence:
+          enabled: true
+          size: 1Gi
+    
+    # Enable PostgreSQL
+    postgresql:
+      enabled: true
+      auth:
+        username: immich
+        password: immich
+        database: immich
+      primary:
+        persistence:
+          enabled: true
+          size: 10Gi
+    
+    # Your existing persistence
     persistence:
       library:
         existingClaim: immich-data
+    
+    # Your existing ingress
     server:
       ingress:
         main:
