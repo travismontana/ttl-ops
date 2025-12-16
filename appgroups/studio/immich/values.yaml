@@ -2,6 +2,9 @@ immich:
   immich:
     metrics:
       enabled: false
+    persistence:
+      library:
+        existingClaim: immich-data
     
   # Enable Valkey (Redis)
   valkey:
@@ -24,9 +27,7 @@ immich:
         size: 10Gi
   
   # Your existing persistenc
-  persistence:
-    library:
-      existingClaim: immich-data
+
   
   # Your existing ingress
   server:
