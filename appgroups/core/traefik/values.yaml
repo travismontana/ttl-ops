@@ -1,5 +1,11 @@
 traefik:
   ports:
+    postgres:
+      port: 5432
+      expose:
+        default: true
+      entryPoints: 5432
+      protocol: TCP
     websecure:
       tls:
         enabled: true
