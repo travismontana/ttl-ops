@@ -3,44 +3,44 @@ immich:
     metrics:
       enabled: false
     
-    # Enable Valkey (Redis)
-    valkey:
-      enabled: true
-      master:
-        persistence:
-          enabled: true
-          size: 1Gi
-    
-    # Enable PostgreSQL
-    postgresql:
-      enabled: true
-      auth:
-        username: immich
-        password: immich
-        database: immich
-      primary:
-        persistence:
-          enabled: true
-          size: 10Gi
-    
-    # Your existing persistenc
-    persistence:
-      library:
-        existingClaim: immich-data
-    
-    # Your existing ingress
-    server:
-      ingress:
-        main:
-          enabled: true
-          hosts:
-            - host: img.studio.abode.tailandtraillabs.org
-              paths:
-                - path: /
-          ingressClassName: studio-traefik
-          annotations:
-            kubernetes.io/ingress.class: studio-traefik
-          tls:
-            - secretName: wildcard-tls
-              hosts:
-                - img.studio.abode.tailandtraillabs.org
+  # Enable Valkey (Redis)
+  valkey:
+    enabled: true
+    master:
+      persistence:
+        enabled: true
+        size: 1Gi
+  
+  # Enable PostgreSQL
+  postgresql:
+    enabled: true
+    auth:
+      username: immich
+      password: immich
+      database: immich
+    primary:
+      persistence:
+        enabled: true
+        size: 10Gi
+  
+  # Your existing persistenc
+  persistence:
+    library:
+      existingClaim: immich-data
+  
+  # Your existing ingress
+  server:
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: img.studio.abode.tailandtraillabs.org
+            paths:
+              - path: /
+        ingressClassName: studio-traefik
+        annotations:
+          kubernetes.io/ingress.class: studio-traefik
+        tls:
+          - secretName: wildcard-tls
+            hosts:
+              - img.studio.abode.tailandtraillabs.org
