@@ -31,6 +31,7 @@ spec:
           
           rule {
             source_labels = ["__address__"]
+            regex         = "([^:]+)(:[0-9]+)?" 
             replacement   = "$1:10250"
             target_label  = "__address__"
           }
