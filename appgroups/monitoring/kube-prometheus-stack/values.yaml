@@ -118,6 +118,7 @@ loki:
       retention_period: 744h
     compactor:
       retention_enabled: true
+      delete_request_store: filesystem
     ruler:
       enable_api: true
       storage:
