@@ -83,6 +83,7 @@ kube-prometheus-stack:
           hosts:
             - prometheus.monitoring.abode.tailandtraillabs.org
     prometheusSpec:
+      enableRemoteWriteReceiver: false
       externalUrl: https://prometheus.monitoring.abode.tailandtraillabs.org
       remoteWrite: []
       storageSpec:

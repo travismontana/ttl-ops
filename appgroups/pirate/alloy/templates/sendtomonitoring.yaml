@@ -2,7 +2,7 @@
 apiVersion: collectors.grafana.com/v1alpha1
 kind: Alloy
 metadata:
-  name: alloy-test
+  name: alloy-to-monitoring
 spec:
   alloy:
     configMap:
@@ -16,6 +16,6 @@ spec:
 
         prometheus.remote_write "local_prom" {
           endpoint {
-            url = "http://prometheus.monitoring.abode.tailandtraillabs.org:9090/api/v1/write"
+            url = "http://prometheus.monitoring.abode.tailandtraillabs.org/api/v1/write"
           }
         }
