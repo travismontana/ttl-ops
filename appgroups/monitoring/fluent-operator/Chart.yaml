@@ -1,0 +1,11 @@
+apiVersion: v2
+name: fluent-operator-stack
+description: fluent-operator-stack
+type: application
+version: 0.1.0
+appVersion: "80.4.1"
+
+dependencies:
+  - name: fluent-operator
+    version: 3.5.0
+    repository: "https://fluent.github.io/helm-charts"

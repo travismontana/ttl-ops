@@ -1,0 +1,26 @@
+fluent-operator:
+  fluentbit:
+    input:
+        nodeExporterMetrics:
+          tag: node_metrics
+          scrapeInterval: 15s
+          path:
+            procfs: /host/proc
+            sysfs: /host/sys
+        fluentBitMetrics:
+         scrapeInterval: "2"
+         scrapeOnStart: true
+         tag: "fb.metrics"
+    output:
+      loki:
+        enabled: true
+        host: loki.monitoring.abode.tailandtraillabs.org
+        port: 80
+        tls: off
+        name: loki-monitoring
+        match: *
+    filter:
+      multiline:
+        enabled: true
+  fluentd:
+    enabled: false
