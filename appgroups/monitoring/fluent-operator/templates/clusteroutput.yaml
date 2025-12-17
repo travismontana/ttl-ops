@@ -9,9 +9,6 @@ spec:
   loki:
     host: loki.monitoring.abode.tailandtraillabs.org
     port: 80
-    labels:
-      - job: fluentbit
-      - cluster: monitoring
     lineFormat: json
     removeKeys:
       - kubernetes
