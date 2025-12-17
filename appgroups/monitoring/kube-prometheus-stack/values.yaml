@@ -1,4 +1,6 @@
 kube-prometheus-stack:
+  chunksCache:
+    enabled: false
   crds:
     upgradeJob:
       enabled: true
