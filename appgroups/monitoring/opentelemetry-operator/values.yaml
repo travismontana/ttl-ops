@@ -1,0 +1,9 @@
+opentelemetry-operator:
+  manager:
+    autoImplementation: 
+      go:
+        enabled: true
+    serviceMonitor:
+      enabled: true
+    prometheusRule:
+      enabled: true
