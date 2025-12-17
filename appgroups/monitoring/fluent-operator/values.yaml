@@ -18,7 +18,7 @@ fluent-operator:
         port: 80
         tls: off
         name: loki-monitoring
-        match: *
+        match: '*'
     filter:
       multiline:
         enabled: true
