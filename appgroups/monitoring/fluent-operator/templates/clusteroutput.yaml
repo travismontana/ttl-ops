@@ -1,0 +1,18 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterOutput
+metadata:
+  name: loki-monitoring
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  matchRegex: (?:kube|service)\.(.*)
+  loki:
+    host: loki.monitoring.abode.tailandtraillabs.org
+    port: 80
+    labels:
+      job: fluentbit
+      cluster: monitoring
+    lineFormat: json
+    removeKeys:
+      - kubernetes
+      - stream
