@@ -95,6 +95,8 @@ kube-prometheus-stack:
                 storage: 50Gi
 
 loki:
+  chunksCache:
+    enabled: false
   deploymentMode: SingleBinary
   
   loki:
