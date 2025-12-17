@@ -110,6 +110,8 @@ loki:
   pattern_ingester:
     enabled: true
   deploymentMode: SingleBinary
+  lokiCanary:
+    enabled: false
   loki:
     monitoring:
       lokiCanary:
