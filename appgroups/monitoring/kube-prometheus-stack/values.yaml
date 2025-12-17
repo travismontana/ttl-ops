@@ -98,8 +98,12 @@ kube-prometheus-stack:
 loki:
   chunksCache:
     enabled: false
+  pattern_ingester:
+    enabled: true
   deploymentMode: SingleBinary
-  
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
   loki:
     auth_enabled: false
     commonConfig:
