@@ -66,6 +66,13 @@ kube-prometheus-stack:
         url: http://loki-gateway.monitoring.svc.cluster.local:80
         access: proxy
         isDefault: false
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        url: http://monitoring-kube-prometheus-stack-loki-gateway.kube-prometheus-stack.svc.cluster.local:80
+        access: proxy
+        isDefault: false
+
   prometheus:
     enabled: true
     ingress:
