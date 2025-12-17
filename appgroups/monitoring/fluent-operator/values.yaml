@@ -1,12 +1,6 @@
 fluent-operator:
   fluentbit:
     input:
-        nodeExporterMetrics:
-          tag: node_metrics
-          scrapeInterval: 15s
-          path:
-            procfs: /host/proc
-            sysfs: /host/sys
         fluentBitMetrics:
          scrapeInterval: "2"
          scrapeOnStart: true
