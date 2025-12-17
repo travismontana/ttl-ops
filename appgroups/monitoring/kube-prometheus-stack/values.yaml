@@ -15,19 +15,34 @@ kube-prometheus-stack:
         - secretName: alertmanager-tls
           hosts:
             - alertmanager.monitoring.abode.tailandtraillabs.org
+    alertmanagerSpec:
+      externalUrl: https://alertmanager.monitoring.abode.tailandtraillabs.org
     config:
       global:
         resolve_timeout: 5m
+        smtp_smarthost: 'smtp.gmail.com:587'
+        smtp_from: 'bob@bomar.us'
+        smtp_auth_username: 'bob@bomar.us'
+        smtp_auth_password: '{{ secret "alertmanager-smtp" "password" }}'
+        smtp_require_tls: true
       route:
-        group_by: ['alertname']
+        group_by: ['alertname', 'cluster', 'service']
         group_wait: 30s
         group_interval: 5m
         repeat_interval: 12h
-        receiver: 'default-receiver'
+        receiver: 'email-bob'
+        routes:
+          - match:
+              severity: critical
+            receiver: 'email-bob'
+            repeat_interval: 1h
       receivers:
-        - name: 'default-receiver'
+        - name: 'email-bob'
           email_configs:
-            - to: '
+            - to: 'bob@bomar.us'
+              send_resolved: true
+              headers:
+                Subject: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
   grafana:
     enabled: true
     ingress:
