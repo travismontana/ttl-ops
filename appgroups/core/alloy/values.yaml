@@ -1,5 +1,3 @@
 alloy-operator:
   crds:
     deployPodLogsCRD: true
-  extraArgs:
-    - --disable-reporting=true

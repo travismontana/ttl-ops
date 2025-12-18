@@ -5,6 +5,8 @@ metadata:
   namespace: alloy
 spec:
   alloy:
+    extraArgs:
+      - --disable-reporting=true
     configMap:
       content: |-
         otelcol.receiver.otlp "cluster" {
