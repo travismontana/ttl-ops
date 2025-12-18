@@ -1,6 +1,5 @@
-opentelemetry-operator:
+opentelemetry-collector:
   mode: deployment  # or daemonset
-
   config:
     receivers:
       otlp:

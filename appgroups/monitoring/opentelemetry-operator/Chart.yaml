@@ -1,8 +1,8 @@
 apiVersion: v2
-name: portainer
+name: opentelemetry-stack
 version: 0.1.0
-description: Portainer container management UI
+description: OTEL
 dependencies:
-  - name: opentelemetry-operator
-    version: 0.100.0
+  - name: opentelemetry-collector
+    version: 0.141.1
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
