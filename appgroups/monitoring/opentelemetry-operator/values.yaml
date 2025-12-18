@@ -31,7 +31,7 @@ opentelemetry-collector:
         traces:
           receivers: [otlp]
           processors: [batch]
-          exporters: [otlp/tempo, logging]
+          exporters: [otlp/tempo]
         
         metrics:
           receivers: [otlp]
