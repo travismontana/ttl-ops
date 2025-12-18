@@ -1,0 +1,54 @@
+# base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+configMapGenerator:
+  - name: dashboard-use-nodes
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "USE Method"
+    files:
+      - dashboards/use-method-nodes.json
+
+  - name: dashboard-use-k8s
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "USE Method"
+    files:
+      - dashboards/use-method-k8s.json
+
+  - name: dashboard-red-template
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "RED Method"
+    files:
+      - dashboards/red-template.json
+
+  - name: dashboard-golden-signals
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "Golden Signals"
+    files:
+      - dashboards/golden-signals-overview.json
+
+  - name: dashboard-fleet-overview
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: "Fleet"
+    files:
+      - dashboards/fleet-overview.json
+
+generatorOptions:
+  disableNameSuffixHash: true
