@@ -135,7 +135,7 @@ spec:
           
           rule {
             target_label = "cluster"
-            replacement  = "pirate"
+            replacement  = "monitoring"
           }
         }
         
