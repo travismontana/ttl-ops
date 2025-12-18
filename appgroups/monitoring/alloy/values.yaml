@@ -1,3 +1,0 @@
-alloy-operator:
-  crds:
-    deployPodLogsCRD: true
