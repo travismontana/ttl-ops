@@ -32,7 +32,9 @@ spec:
         }
 
         otelcol.exporter.otlphttp "default" {
-          endpoint = "http://otel.monitoring.abode.tailandtraillabs.org/"
+          client { 
+            endpoint = "http://otel.monitoring.abode.tailandtraillabs.org/"
+          }
         }
         // Kubernetes discovery
         discovery.kubernetes "nodes" {
