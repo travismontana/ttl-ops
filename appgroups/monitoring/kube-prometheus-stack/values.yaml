@@ -87,12 +87,7 @@ kube-prometheus-stack:
         api_url: https://openidconnect.googleapis.com/v1/userinfo
         
         # Email-based role mapping
-        role_attribute_path: |
-          email == 'bob@bomar.us' && 'Admin' || 
-          contains(email, 'ttl-admin-sg@bomar.us') && 'Admin' ||
-          contains(email, 'admin-sg@bomar.us') && 'Admin' ||
-          contains(email, '@bomar.us') && 'Editor' || 
-          'Viewer'
+        role_attribute_path: "email == 'bob@bomar.us' && 'Admin' || contains(email, '@bomar.us') && 'Editor' || 'Viewer'"
         
       auth:
         disable_login_form: false
