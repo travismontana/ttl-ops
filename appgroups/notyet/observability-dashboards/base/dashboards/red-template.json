@@ -1,0 +1,60 @@
+{
+  "title": "RED Method - Service Template",
+  "uid": "red-service",
+  "tags": ["red", "service", "application"],
+  "editable": true,
+  "templating": {
+    "list": [
+      {"name": "cluster", "type": "query", "datasource": "Prometheus", "query": "label_values(http_requests_total, cluster)", "multi": false},
+      {"name": "namespace", "type": "query", "datasource": "Prometheus", "query": "label_values(http_requests_total{cluster=\"$cluster\"}, namespace)", "multi": false},
+      {"name": "service", "type": "query", "datasource": "Prometheus", "query": "label_values(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\"}, service)", "multi": false}
+    ]
+  },
+  "panels": [
+    {
+      "title": "Rate - Requests/sec",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (method, endpoint)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "reqps"}}
+    },
+    {
+      "title": "Errors - % of Requests",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\",status=~\"5..\"}[5m])) by (method, endpoint) / sum(rate(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (method, endpoint) * 100"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "percent"}}
+    },
+    {
+      "title": "Duration - Latency Percentiles",
+      "targets": [
+        {"expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (le, method, endpoint))", "legendFormat": "p50"},
+        {"expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (le, method, endpoint))", "legendFormat": "p95"},
+        {"expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (le, method, endpoint))", "legendFormat": "p99"}
+      ],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "s"}}
+    },
+    {
+      "title": "Status Code Breakdown",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m])) by (status)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+    },
+    {
+      "title": "Apdex (T=0.3s)",
+      "targets": [{"expr": "(sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\",le=\"0.3\"}[5m])) + sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\",le=\"1.2\"}[5m])) * 0.5) / sum(rate(http_request_duration_seconds_count{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m]))"}],
+      "type": "gauge",
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8}
+    },
+    {
+      "title": "Current RPS",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=\"$namespace\",service=\"$service\"}[5m]))"}],
+      "type": "stat",
+      "gridPos": {"h": 8, "w": 6, "x": 18, "y": 8}
+    }
+  ],
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"}
+}

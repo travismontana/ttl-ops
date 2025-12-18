@@ -1,0 +1,56 @@
+{
+  "title": "USE Method - Kubernetes Resources",
+  "uid": "use-k8s",
+  "tags": ["use", "kubernetes", "pods"],
+  "editable": true,
+  "templating": {
+    "list": [
+      {"name": "cluster", "type": "query", "datasource": "Prometheus", "query": "label_values(up, cluster)", "multi": false},
+      {"name": "namespace", "type": "query", "datasource": "Prometheus", "query": "label_values(kube_namespace_created{cluster=\"$cluster\"}, namespace)", "multi": false},
+      {"name": "pod", "type": "query", "datasource": "Prometheus", "query": "label_values(kube_pod_info{cluster=\"$cluster\",namespace=\"$namespace\"}, pod)", "multi": true, "includeAll": true}
+    ]
+  },
+  "panels": [
+    {
+      "title": "Pod CPU Usage (cores)",
+      "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\",container!=\"\",container!=\"POD\"}[5m])) by (pod, container)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+    },
+    {
+      "title": "Pod CPU Throttling %",
+      "targets": [{"expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\"}[5m])) by (pod) / sum(rate(container_cpu_cfs_periods_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\"}[5m])) by (pod) * 100"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+    },
+    {
+      "title": "Pod Memory Usage",
+      "targets": [{"expr": "sum(container_memory_working_set_bytes{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\",container!=\"\"}) by (pod, container)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+    },
+    {
+      "title": "Container Restarts (OOM Indicator)",
+      "targets": [{"expr": "sum(kube_pod_container_status_restarts_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\"}) by (pod)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+    },
+    {
+      "title": "PVC Utilization %",
+      "targets": [{"expr": "100 * (kubelet_volume_stats_used_bytes{cluster=\"$cluster\",namespace=\"$namespace\"} / kubelet_volume_stats_capacity_bytes{cluster=\"$cluster\",namespace=\"$namespace\"})"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+    },
+    {
+      "title": "Pod Network Bandwidth",
+      "targets": [
+        {"expr": "sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\"}[5m])) by (pod)", "legendFormat": "{{pod}} RX"},
+        {"expr": "sum(rate(container_network_transmit_bytes_total{cluster=\"$cluster\",namespace=\"$namespace\",pod=~\"$pod\"}[5m])) by (pod)", "legendFormat": "{{pod}} TX"}
+      ],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+    }
+  ],
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"}
+}

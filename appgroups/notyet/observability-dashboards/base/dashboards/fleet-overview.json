@@ -1,0 +1,63 @@
+{
+  "title": "Fleet Overview - All Clusters",
+  "uid": "fleet-overview",
+  "tags": ["fleet", "overview", "multi-cluster"],
+  "editable": true,
+  "panels": [
+    {
+      "title": "Cluster Fleet Status",
+      "targets": [
+        {"expr": "up{job=\"kube-state-metrics\"}", "format": "table", "instant": true, "refId": "A"},
+        {"expr": "sum(kube_node_info) by (cluster)", "format": "table", "instant": true, "refId": "B"},
+        {"expr": "count(kube_pod_info{phase=\"Running\"}) by (cluster)", "format": "table", "instant": true, "refId": "C"},
+        {"expr": "100 - (avg by (cluster) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "format": "table", "instant": true, "refId": "D"},
+        {"expr": "100 - ((avg by (cluster) (node_memory_MemAvailable_bytes) / avg by (cluster) (node_memory_MemTotal_bytes)) * 100)", "format": "table", "instant": true, "refId": "E"}
+      ],
+      "type": "table",
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 0}
+    },
+    {
+      "title": "CPU Utilization by Cluster",
+      "targets": [{"expr": "100 - (avg by (cluster) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 10},
+      "fieldConfig": {"defaults": {"unit": "percent"}}
+    },
+    {
+      "title": "Memory Utilization by Cluster",
+      "targets": [{"expr": "100 - ((avg by (cluster) (node_memory_MemAvailable_bytes) / avg by (cluster) (node_memory_MemTotal_bytes)) * 100)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 10},
+      "fieldConfig": {"defaults": {"unit": "percent"}}
+    },
+    {
+      "title": "Pod Count by Cluster",
+      "targets": [
+        {"expr": "count(kube_pod_info{phase=\"Running\"}) by (cluster)", "legendFormat": "{{cluster}} running"},
+        {"expr": "count(kube_pod_info{phase=\"Pending\"}) by (cluster)", "legendFormat": "{{cluster}} pending"}
+      ],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 18}
+    },
+    {
+      "title": "Container Restarts by Cluster",
+      "targets": [{"expr": "sum(kube_pod_container_status_restarts_total) by (cluster)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 18}
+    },
+    {
+      "title": "CPU Utilization Heatmap (All Nodes)",
+      "targets": [{"expr": "100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)", "format": "time_series"}],
+      "type": "heatmap",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 26}
+    },
+    {
+      "title": "Memory Utilization Heatmap (All Nodes)",
+      "targets": [{"expr": "100 - ((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100)", "format": "time_series"}],
+      "type": "heatmap",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 26}
+    }
+  ],
+  "refresh": "30s",
+  "time": {"from": "now-3h", "to": "now"}
+}

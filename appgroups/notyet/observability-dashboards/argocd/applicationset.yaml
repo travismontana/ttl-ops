@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: observability-dashboards
+  namespace: argocd
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            monitoring: "enabled"
+  
+  template:
+    metadata:
+      name: '{{name}}-dashboards'
+      labels:
+        app: observability-dashboards
+        cluster: '{{name}}'
+    
+    spec:
+      project: default
+      
+      source:
+        repoURL: https://git.tailandtraillabs.org/b0b/observability-dashboards.git
+        targetRevision: main
+        path: overlays/{{metadata.labels.environment}}
+      
+      destination:
+        server: '{{server}}'
+        namespace: monitoring
+      
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=false
+      
+      ignoreDifferences:
+        - group: ""
+          kind: ConfigMap
+          jsonPointers:
+            - /data

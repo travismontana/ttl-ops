@@ -1,0 +1,25 @@
+# Example GitLab CI/CD pipeline for dashboard validation
+stages:
+  - validate
+  - deploy
+
+validate:
+  stage: validate
+  image: alpine/k8s:1.28.0
+  script:
+    - kubectl kustomize base
+    - kubectl kustomize overlays/production
+    - kubectl kustomize overlays/development
+    - kubectl apply --dry-run=client -f argocd/
+  only:
+    - merge_requests
+    - main
+
+deploy-to-argocd:
+  stage: deploy
+  image: alpine/k8s:1.28.0
+  script:
+    - kubectl apply -f argocd/applicationset.yaml
+  only:
+    - main
+  when: manual

@@ -1,0 +1,15 @@
+# Build artifacts
+/tmp/
+*.yaml.bak
+*.json.bak
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

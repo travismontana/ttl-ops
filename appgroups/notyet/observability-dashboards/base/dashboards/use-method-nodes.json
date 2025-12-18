@@ -1,0 +1,67 @@
+{
+  "title": "USE Method - Node Resources",
+  "uid": "use-nodes",
+  "tags": ["use", "nodes", "infrastructure"],
+  "editable": true,
+  "templating": {
+    "list": [
+      {"name": "cluster", "type": "query", "datasource": "Prometheus", "query": "label_values(up, cluster)", "multi": false},
+      {"name": "node", "type": "query", "datasource": "Prometheus", "query": "label_values(node_uname_info{cluster=\"$cluster\"}, nodename)", "multi": true, "includeAll": true}
+    ]
+  },
+  "panels": [
+    {
+      "title": "CPU Utilization %",
+      "targets": [{"expr": "100 - (avg by (cluster, instance) (irate(node_cpu_seconds_total{cluster=\"$cluster\",mode=\"idle\",instance=~\"$node.*\"}[5m])) * 100)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+    },
+    {
+      "title": "CPU Saturation (Load/Cores)",
+      "targets": [{"expr": "node_load1{cluster=\"$cluster\",instance=~\"$node.*\"} / count(node_cpu_seconds_total{cluster=\"$cluster\",mode=\"idle\",instance=~\"$node.*\"}) by (instance)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+    },
+    {
+      "title": "Memory Utilization %",
+      "targets": [{"expr": "100 - ((node_memory_MemAvailable_bytes{cluster=\"$cluster\",instance=~\"$node.*\"} / node_memory_MemTotal_bytes{cluster=\"$cluster\",instance=~\"$node.*\"}) * 100)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+    },
+    {
+      "title": "Memory Saturation (Page Faults/s)",
+      "targets": [{"expr": "rate(node_vmstat_pgmajfault{cluster=\"$cluster\",instance=~\"$node.*\"}[5m])"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+    },
+    {
+      "title": "Disk Space Used %",
+      "targets": [{"expr": "100 - ((node_filesystem_avail_bytes{cluster=\"$cluster\",instance=~\"$node.*\",fstype!~\"tmpfs|fuse.*\"} / node_filesystem_size_bytes{cluster=\"$cluster\",instance=~\"$node.*\",fstype!~\"tmpfs|fuse.*\"}) * 100)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+    },
+    {
+      "title": "Disk I/O Saturation",
+      "targets": [{"expr": "rate(node_disk_io_time_seconds_total{cluster=\"$cluster\",instance=~\"$node.*\"}[5m])"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+    },
+    {
+      "title": "Network Bandwidth",
+      "targets": [
+        {"expr": "rate(node_network_receive_bytes_total{cluster=\"$cluster\",instance=~\"$node.*\",device!~\"lo|veth.*\"}[5m])", "legendFormat": "{{instance}} {{device}} RX"},
+        {"expr": "rate(node_network_transmit_bytes_total{cluster=\"$cluster\",instance=~\"$node.*\",device!~\"lo|veth.*\"}[5m])", "legendFormat": "{{instance}} {{device}} TX"}
+      ],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+    },
+    {
+      "title": "Network Drops (Saturation)",
+      "targets": [{"expr": "rate(node_network_receive_drop_total{cluster=\"$cluster\",instance=~\"$node.*\",device!~\"lo|veth.*\"}[5m]) + rate(node_network_transmit_drop_total{cluster=\"$cluster\",instance=~\"$node.*\",device!~\"lo|veth.*\"}[5m])"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24}
+    }
+  ],
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"}
+}

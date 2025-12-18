@@ -1,0 +1,53 @@
+{
+  "title": "Golden Signals - Service Overview",
+  "uid": "golden-signals",
+  "tags": ["golden-signals", "sre", "overview"],
+  "editable": true,
+  "templating": {
+    "list": [
+      {"name": "cluster", "type": "query", "datasource": "Prometheus", "query": "label_values(up, cluster)", "multi": false},
+      {"name": "namespace", "type": "query", "datasource": "Prometheus", "query": "label_values(http_requests_total{cluster=\"$cluster\"}, namespace)", "multi": true, "includeAll": true}
+    ]
+  },
+  "panels": [
+    {
+      "title": "Latency (p99)",
+      "targets": [{"expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (le, namespace, service))"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "s"}}
+    },
+    {
+      "title": "Traffic (Requests/sec)",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (namespace, service)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "reqps"}}
+    },
+    {
+      "title": "Errors (% of requests)",
+      "targets": [{"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\",status=~\"5..\"}[5m])) by (namespace, service) / sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (namespace, service) * 100"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "fieldConfig": {"defaults": {"unit": "percent"}}
+    },
+    {
+      "title": "Saturation (CPU cores used)",
+      "targets": [{"expr": "sum(rate(container_cpu_usage_seconds_total{cluster=\"$cluster\",namespace=~\"$namespace\",container!=\"\"}[5m])) by (namespace, pod)"}],
+      "type": "timeseries",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+    },
+    {
+      "title": "Service Summary Table",
+      "targets": [
+        {"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (namespace, service)", "format": "table", "instant": true, "refId": "A"},
+        {"expr": "sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\",status=~\"5..\"}[5m])) by (namespace, service) / sum(rate(http_requests_total{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (namespace, service) * 100", "format": "table", "instant": true, "refId": "B"},
+        {"expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{cluster=\"$cluster\",namespace=~\"$namespace\"}[5m])) by (le, namespace, service))", "format": "table", "instant": true, "refId": "C"}
+      ],
+      "type": "table",
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+    }
+  ],
+  "refresh": "30s",
+  "time": {"from": "now-1h", "to": "now"}
+}
