@@ -17,12 +17,11 @@ opentelemetry-collector:
         send_batch_size: 1024
       
     exporters:
-      prometheus:
-        endpoint: "prometheus-operated.kube-prometheus-stack.svc:9090"
-        namespace: "kube-prometheus-stack"
+      prometheusremotewrite:
+        endpoint: "http://monitoring-kube-prometheus-prometheus.kube-prometheus-stack.svc.cluster.local:9090/api/v1/write"
       
       otlp/tempo:
-        endpoint: "monitoring-kube-prometheus-stack-tempo.kube-prometheus-stack.svc:4317"
+        endpoint: "monitoring-kube-prometheus-stack-tempo.kube-prometheus-stack.svc.cluster.local:4317"
         tls:
           insecure: true
     
@@ -36,4 +35,4 @@ opentelemetry-collector:
         metrics:
           receivers: [otlp]
           processors: [batch]
-          exporters: [prometheus]
+          exporters: [prometheusremotewrite]
