@@ -1,8 +1,0 @@
-apiVersion: v2
-name: portainer
-version: 0.1.0
-description: Portainer container management UI
-dependencies:
-  - name: opentelemetry-operator
-    version: 0.100.0
-    repository: https://open-telemetry.github.io/opentelemetry-helm-charts

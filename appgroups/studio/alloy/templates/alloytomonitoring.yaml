@@ -7,6 +7,33 @@ spec:
   alloy:
     configMap:
       content: |-
+        otelcol.receiver.otlp "cluster" {
+          grpc {
+            endpoint = "0.0.0.0:4317"
+          }
+
+          http {
+            endpoint = "0.0.0.0:4318"
+          }
+
+          output {
+            metrics = [otelcol.processor.batch.cluster.input]
+            logs    = [otelcol.processor.batch.cluster.input]
+            traces  = [otelcol.processor.batch.cluster.input]
+          }
+        }
+
+        otelcol.processor.batch "cluster" {
+          output {
+            metrics = [otelcol.exporter.otlphttp.default.input]
+            logs    = [otelcol.exporter.otlphttp.default.input]
+            traces  = [otelcol.exporter.otlphttp.default.input]
+          }
+        }
+
+        otelcol.exporter.otlphttp "default" {
+          endpoint = "http://otel.monitoring.abode.tailandtraillabs.org/"
+        }
         // Kubernetes discovery
         discovery.kubernetes "nodes" {
           role = "node"
