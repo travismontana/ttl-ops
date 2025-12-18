@@ -1,6 +1,6 @@
 opentelemetry-collector:
   image:
-    repository: "/opentelemetry-collector-contrib"
+    repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
   mode: deployment  # or daemonset
   config:
     receivers:
