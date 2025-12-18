@@ -1,0 +1,26 @@
+# In monitoring cluster
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otel-collector-http
+  namespace: opentelemetry-operator
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+spec:
+  ingressClassName: monitoring-traefik
+  tls:
+    - hosts:
+        - otel.monitoring.abode.tailandtraillabs.org
+      secretName: otel-collector-tls
+  rules:
+    - host: otel.monitoring.abode.tailandtraillabs.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-opentelemetry-operator-opentelemetry-collector
+                port:
+                  number: 4318

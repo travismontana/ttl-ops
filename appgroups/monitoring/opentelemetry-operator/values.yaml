@@ -24,6 +24,14 @@ opentelemetry-collector:
         endpoint: "monitoring-kube-prometheus-stack-tempo.kube-prometheus-stack.svc.cluster.local:4317"
         tls:
           insecure: true
+
+    filter/health:
+      error_mode: ignore
+      traces:
+        span:
+          - 'attributes["http.target"] == "/health"'
+          - 'attributes["http.route"] == "/health"'
+          - 'attributes["url.path"] == "/health"' 
     
     service:
       pipelines:
