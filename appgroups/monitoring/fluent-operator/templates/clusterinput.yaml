@@ -9,7 +9,6 @@ spec:
     tag: kube.*
     path: /var/log/containers/*.log
     parser: cri
-    refreshInterval: 5
     memBufLimit: 5MB
     skipLongLines: true
     db: /fluent-bit/tail/pos.db
