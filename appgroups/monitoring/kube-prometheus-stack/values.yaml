@@ -213,8 +213,6 @@ tempo:
         - secretName: tempo-tls
           hosts:
             - tempo.monitoring.abode.tailandtraillabs.org
-      annotations:
-        kubernetes.io/ingress.class: monitoring
   persistence:
     enabled: true
     storageClassName: local-path
