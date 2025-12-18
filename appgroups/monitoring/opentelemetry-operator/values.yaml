@@ -25,9 +25,6 @@ opentelemetry-collector:
         endpoint: "monitoring-kube-prometheus-stack-tempo.kube-prometheus-stack.svc:4317"
         tls:
           insecure: true
-      
-      logging:
-        loglevel: debug  # for testing
     
     service:
       pipelines:
