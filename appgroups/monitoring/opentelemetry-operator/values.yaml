@@ -1,4 +1,4 @@
-open
+opentelemetry-operator:
   mode: deployment  # or daemonset
 
   config:
