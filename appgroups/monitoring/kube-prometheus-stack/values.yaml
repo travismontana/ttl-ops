@@ -72,6 +72,50 @@ kube-prometheus-stack:
         url: http://monitoring-kube-prometheus-stack-loki-gateway.kube-prometheus-stack.svc.cluster.local:80
         access: proxy
         isDefault: false
+    grafana.ini:
+      server:
+        root_url: https://grafana.monitoring.abode.tailandtraillabs.org
+      
+      auth.generic_oauth:
+        enabled: true
+        name: Google
+        allow_sign_up: true
+        auto_login: false
+        scopes: openid email profile
+        auth_url: https://accounts.google.com/o/oauth2/v2/auth
+        token_url: https://oauth2.googleapis.com/token
+        api_url: https://openidconnect.googleapis.com/v1/userinfo
+        
+        # Email-based role mapping
+        role_attribute_path: |
+          email == 'bob@bomar.us' && 'Admin' || 
+          contains(email, 'ttl-admin-sg@bomar.us') && 'Admin' ||
+          contains(email, 'admin-sg@bomar.us') && 'Admin' ||
+          contains(email, '@bomar.us') && 'Editor' || 
+          'Viewer'
+        
+      auth:
+        disable_login_form: false
+        oauth_auto_login: false
+        
+      users:
+        auto_assign_org: true
+        auto_assign_org_role: Editor
+    
+    # Reference the secret for OAuth creds
+    envFromSecret: grafana-oauth
+    
+    env:
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-oauth
+            key: client_id
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-oauth
+            key: client_secret
 
   prometheus:
     enabled: true
