@@ -45,7 +45,7 @@ kube-prometheus-stack:
               send_resolved: true
               headers:
                 Subject: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
-  grafana:
+grafana:
     enabled: true
     ingress:
       enabled: true
@@ -63,54 +63,40 @@ kube-prometheus-stack:
     additionalDataSources:
       - name: Loki
         type: loki
-        url: http://loki-gateway.monitoring.svc.cluster.local:80
-        access: proxy
-        isDefault: false
-    additionalDataSources:
-      - name: Loki
-        type: loki
         url: http://monitoring-kube-prometheus-stack-loki-gateway.kube-prometheus-stack.svc.cluster.local:80
         access: proxy
         isDefault: false
+    
+    # Use envValueFrom for secret injection
+    envValueFrom:
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+        secretKeyRef:
+          name: grafana-oauth
+          key: client_id
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+        secretKeyRef:
+          name: grafana-oauth
+          key: client_secret
+    
     grafana.ini:
       server:
         root_url: https://grafana.monitoring.abode.tailandtraillabs.org
-      
       auth.generic_oauth:
         enabled: true
         name: Google
         allow_sign_up: true
         auto_login: false
-        client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
-        client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
         scopes: openid email profile
         auth_url: https://accounts.google.com/o/oauth2/v2/auth
         token_url: https://oauth2.googleapis.com/token
         api_url: https://openidconnect.googleapis.com/v1/userinfo
-        
-        # Email-based role mapping
         role_attribute_path: "email == 'bob@bomar.us' && 'Admin' || contains(email, '@bomar.us') && 'Editor' || 'Viewer'"
-        
       auth:
         disable_login_form: false
         oauth_auto_login: false
-        
       users:
         auto_assign_org: true
         auto_assign_org_role: Editor
-    
-    # Reference the secret for OAuth creds    
-    env:
-      GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
-        valueFrom:
-          secretKeyRef:
-            name: grafana-oauth
-            key: client_id
-      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-        valueFrom:
-          secretKeyRef:
-            name: grafana-oauth
-            key: client_secret
 
   prometheus:
     enabled: true
