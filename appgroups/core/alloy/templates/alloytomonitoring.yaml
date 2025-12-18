@@ -215,11 +215,5 @@ spec:
         loki.write "monitoring_loki" {
           endpoint {
             url = "https://loki.monitoring.abode.tailandtraillabs.org/loki/api/v1/push"
-            
-            // Optional: match prometheus queue config
-            queue_config {
-              capacity = 10000
-              max_shards = 10
-            }
           }
         }
