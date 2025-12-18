@@ -1,0 +1,15 @@
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFilter
+metadata:
+  name: kubernetes
+  labels:
+    fluentbit.fluent.io/enabled: "true"
+spec:
+  match: kube.*
+  filters:
+    - kubernetes:
+        kubeURL: https://kubernetes.default.svc:443
+        kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+        labels: true
+        annotations: false
