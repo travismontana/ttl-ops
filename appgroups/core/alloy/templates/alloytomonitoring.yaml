@@ -189,3 +189,37 @@ spec:
             }
           }
         }
+        // Discover all pods for log collection
+        discovery.kubernetes "pods_logs" {
+          role = "pod"
+        }
+
+        // Collect pod logs from container filesystems
+        loki.source.kubernetes "pods" {
+          targets    = discovery.kubernetes.pods_logs.targets
+          forward_to = [loki.process.add_cluster.receiver]
+        }
+
+        // Add cluster label to logs
+        loki.process "add_cluster" {
+          forward_to = [loki.write.monitoring_loki.receiver]
+          
+          stage.static_labels {
+            values = {
+              cluster = "studio",  // Change to "pirate" for pirate cluster
+            }
+          }
+        }
+
+        // Push logs to central Loki
+        loki.write "monitoring_loki" {
+          endpoint {
+            url = "https://loki.monitoring.abode.tailandtraillabs.org/loki/api/v1/push"
+            
+            // Optional: match prometheus queue config
+            queue_config {
+              capacity = 10000
+              max_shards = 10
+            }
+          }
+        }
