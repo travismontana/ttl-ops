@@ -1,5 +1,14 @@
 fluent-operator:
+  operator:
+    serviceMonitor:
+      enable: true
   fluentbit:
+    annotations:
+      prometheus.io/scrape: "true"
+    serviceMonitor:
+      enable: true
+    livenessProbe:
+      enabled: false
     input:
         fluentBitMetrics:
          scrapeInterval: "2"
