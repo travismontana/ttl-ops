@@ -45,7 +45,7 @@ kube-prometheus-stack:
               send_resolved: true
               headers:
                 Subject: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
-grafana:
+  grafana:
     enabled: true
     ingress:
       enabled: true
