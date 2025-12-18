@@ -15,6 +15,13 @@ opentelemetry-collector:
       batch:
         timeout: 10s
         send_batch_size: 1024
+      filter/health:
+        error_mode: ignore
+        traces:
+          span:
+            - 'attributes["http.target"] == "/health"'
+            - 'attributes["http.route"] == "/health"'
+            - 'attributes["url.path"] == "/health"' 
       
     exporters:
       prometheusremotewrite:
@@ -25,13 +32,6 @@ opentelemetry-collector:
         tls:
           insecure: true
 
-    filter/health:
-      error_mode: ignore
-      traces:
-        span:
-          - 'attributes["http.target"] == "/health"'
-          - 'attributes["http.route"] == "/health"'
-          - 'attributes["url.path"] == "/health"' 
     
     service:
       pipelines:
