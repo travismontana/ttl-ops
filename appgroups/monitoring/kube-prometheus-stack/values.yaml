@@ -116,6 +116,11 @@ kube-prometheus-stack:
             - prometheus.monitoring.abode.tailandtraillabs.org
     prometheusSpec:
       enableRemoteWriteReceiver: true
+      enableFeatures:
+        - out-of-order-time-window
+      additionalArgs:
+        - name: out-of-order.time-window
+          value: 10m  
       externalUrl: https://prometheus.monitoring.abode.tailandtraillabs.org
       remoteWrite: []
       storageSpec:
