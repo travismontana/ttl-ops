@@ -117,7 +117,7 @@ kube-prometheus-stack:
     prometheusSpec:
       enableRemoteWriteReceiver: true
       enableFeatures:
-        - out-of-order-time-window
+        - out-of-order-ingestion
       additionalArgs:
         - name: out-of-order.time-window
           value: 10m  
