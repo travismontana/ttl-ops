@@ -119,8 +119,7 @@ kube-prometheus-stack:
       enableFeatures:
         - out-of-order-ingestion
       additionalArgs:
-        - name: out-of-order-time-window
-          value: 10m  
+        - --storage.tsbdb.out-of-order-time-window=10m
       externalUrl: https://prometheus.monitoring.abode.tailandtraillabs.org
       remoteWrite: []
       storageSpec:
