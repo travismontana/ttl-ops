@@ -15,6 +15,11 @@ spec:
             path: systems/wopr-web/helm
             namespace: wopr
             wave: "1"
+	  - name: wopr-directus
+            path: 3rdparty/directus/helm
+            namespace: wopr
+            wave: "2"
+
   template:
     metadata:
       name: "{{name}}"
