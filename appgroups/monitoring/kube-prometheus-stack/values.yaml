@@ -227,15 +227,14 @@ loki:
     enabled: false
 
 tempo:
-  tempo:
-    metricsGenerator:
-      enabled: true
-      remoteWriteUrl: "http://prometheus-operated.kube-prometheus-stack:9090/api/v1/write"
-      processor:
-        serviceGraphs:
-          enabled: true
-        spanMetrics:
-          enabled: true
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://prometheus-operated.kube-prometheus-stack:9090/api/v1/write"
+    processor:
+      serviceGraphs:
+        enabled: true
+      spanMetrics:
+        enabled: true
   tempoQuery:
     enabled: true
     ingress:
