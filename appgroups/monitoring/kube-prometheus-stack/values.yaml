@@ -232,7 +232,14 @@ tempo:
   metricsGenerator:
     enabled: true
     remoteWriteUrl: "http://prometheus-operated.kube-prometheus-stack:9090/api/v1/write"
-  
+    tempo:
+      metricsGenerator:
+        enabled: true
+        processor:
+          service_graphs:
+            enabled: true
+          span_metrics:
+            enabled: true
   overrides:
     defaults:
       metrics_generator:
