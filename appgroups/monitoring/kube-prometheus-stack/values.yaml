@@ -232,9 +232,9 @@ tempo:
       enabled: true
       remoteWriteUrl: "http://prometheus-operated.kube-prometheus-stack:9090/api/v1/write"
       processor:
-        service_graphs:
+        serviceGraphs:
           enabled: true
-        span_metrics:
+        spanMetrics:
           enabled: true
   tempoQuery:
     enabled: true
