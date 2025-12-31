@@ -226,13 +226,20 @@ loki:
   test:
     enabled: false
 
+
+  
 tempo:
   metricsGenerator:
     enabled: true
     remoteWriteUrl: "http://prometheus-operated.kube-prometheus-stack:9090/api/v1/write"
-    processors:
-      - service_graphs
-      - span_metrics
+  
+  overrides:
+    defaults:
+      metrics_generator:
+        processors:
+          - service-graphs
+          - span-metrics
+  
   tempoQuery:
     enabled: true
     ingress:
@@ -244,9 +251,8 @@ tempo:
         - secretName: tempo-tls
           hosts:
             - tempo.monitoring.abode.tailandtraillabs.org
+  
   persistence:
     enabled: true
     storageClassName: local-path
     size: 10Gi
-    
-  
