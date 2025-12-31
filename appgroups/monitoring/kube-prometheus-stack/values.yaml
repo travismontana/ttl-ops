@@ -225,7 +225,7 @@ loki:
 
   test:
     enabled: false
-tempo:
+
   tempo:
     metricsGenerator:
       enabled: true
