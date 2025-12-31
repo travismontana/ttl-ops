@@ -38,6 +38,7 @@ spec:
             endpoint = "otel.monitoring.abode.tailandtraillabs.org:80"
           }
         }
+        
         // Kubernetes discovery
         discovery.kubernetes "nodes" {
           role = "node"
@@ -139,7 +140,7 @@ spec:
           rule {
             source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
             action        = "replace"
-            regex         = "([^:]+)(?::\\d+)?;(\\d+)"
+            regex         = "([^:]+)(?:\\d+)?;(\\d+)"
             replacement   = "$1:$2"
             target_label  = "__address__"
           }
@@ -158,6 +159,56 @@ spec:
         prometheus.scrape "pods" {
           targets    = discovery.relabel.pods.output
           forward_to = [prometheus.relabel.add_cluster.receiver]
+        }
+        
+        // Scrape nginx exporters on pods with hasNginx label
+        discovery.relabel "nginx_pods" {
+          targets = discovery.kubernetes.pods.targets
+          
+          // Keep only pods with app.wopr.io/hasNginx=true label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_app_wopr_io_hasNginx"]
+            regex         = "true"
+            action        = "keep"
+          }
+          
+          // Set scrape address to pod IP + nginx exporter port
+          rule {
+            source_labels = ["__address__"]
+            regex         = "([^:]+):.*"
+            replacement   = "${1}:9113"
+            target_label  = "__address__"
+          }
+          
+          // Override metrics path to default
+          rule {
+            replacement  = "/metrics"
+            target_label = "__metrics_path__"
+          }
+          
+          // Add namespace label
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          
+          // Add pod name
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+          
+          // Add app label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+            target_label  = "app"
+          }
+        }
+        
+        prometheus.scrape "nginx" {
+          targets    = discovery.relabel.nginx_pods.output
+          forward_to = [prometheus.relabel.add_cluster.receiver]
+          scrape_interval = "30s"
         }
         
         // Add cluster label to all metrics
@@ -189,17 +240,18 @@ spec:
             }
           }
         }
+        
         // Discover all pods for log collection
         discovery.kubernetes "pods_logs" {
           role = "pod"
         }
-
+        
         // Collect pod logs from container filesystems
         loki.source.kubernetes "pods" {
           targets    = discovery.kubernetes.pods_logs.targets
           forward_to = [loki.process.add_cluster.receiver]
         }
-
+        
         // Add cluster label to logs
         loki.process "add_cluster" {
           forward_to = [loki.write.monitoring_loki.receiver]
@@ -210,7 +262,7 @@ spec:
             }
           }
         }
-
+        
         // Push logs to central Loki
         loki.write "monitoring_loki" {
           endpoint {
