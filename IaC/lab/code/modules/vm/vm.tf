@@ -90,6 +90,9 @@ resource "proxmox_virtual_environment_vm" "cluster_vms" {
       description,
 #      ipv4_addresses,
       mac_addresses,
+      cores,
+      memory,
+      disk
     ]
   }
 

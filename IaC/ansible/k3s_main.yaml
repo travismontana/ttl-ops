@@ -106,8 +106,6 @@
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
         curl -sfL https://get.k3s.io | sh -
-      args:
-        creates: /usr/local/bin/k3s
 
     - name: Install k3s on additional control nodes
       when: is_control_node and not is_first_control
@@ -131,8 +129,6 @@
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
         curl -sfL https://get.k3s.io | sh -
-      args:
-        creates: /usr/local/bin/k3s
 
     - name: Install k3s on worker nodes
       when: not is_control_node
@@ -144,8 +140,6 @@
         K3S_URL: "https://{{ cluster_name }}-node0.{{ domainname }}:6443"
       shell: |
         curl -sfL https://get.k3s.io | sh -
-      args:
-        creates: /usr/local/bin/k3s
 
     - name: Create /dataz
       when: is_first_control
