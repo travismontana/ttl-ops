@@ -1,7 +1,7 @@
 resource "aws_route53_zone" "cluster_zones" {
   for_each = { for cluster in var.clusters : cluster.name => cluster }
   
-  name = "${each.value.name}.${var.subdomain_prefix}.${var.parent_zone_name}"
+  name = "${each.value.name}.${var.parent_zone_name}"
   
   tags = {
     Name      = "${each.value.name}.${var.subdomain_prefix}.${var.parent_zone_name}"
@@ -14,7 +14,7 @@ resource "aws_route53_record" "cluster_ns_delegation" {
   for_each = aws_route53_zone.cluster_zones
   
   zone_id = var.parent_zone_id
-  name    = "${each.key}.${var.subdomain_prefix}.${var.parent_zone_name}"
+  name    = "${each.key}.${var.parent_zone_name}"
   type    = "NS"
   ttl     = 300
   

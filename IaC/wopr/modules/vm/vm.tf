@@ -238,7 +238,7 @@ EOF
 }
 
 data "aws_route53_zone" "main" {
-  name = "${var.domainname}."
+  name = "${var.cluster_name}.${var.domainname}."
 }
 
 resource "aws_route53_record" "cluster_nodes" {
