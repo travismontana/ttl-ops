@@ -102,7 +102,6 @@
           --node-label clustername={{ cluster_name }} 
           --node-label domainname={{ domainname }} 
           --node-label node-role=control
-          --node-taint node-role.kubernetes.io/control-plane:NoSchedule
           --disable=traefik
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
@@ -128,7 +127,6 @@
           --node-label clustername={{ cluster_name }} 
           --node-label domainname={{ domainname }} 
           --node-label node-role=control
-          --node-taint node-role.kubernetes.io/control-plane:NoSchedule
           --disable=traefik"
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
