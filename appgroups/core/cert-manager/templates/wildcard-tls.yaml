@@ -14,4 +14,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "*.{{ .Values.clusterName }}.{{ .Values.domainName }}"
-    - "{{ .Values.clusterName }}.{{ .Values.domainName }"
+    - "{{ .Values.clusterName }}.{{ .Values.domainName }}"
