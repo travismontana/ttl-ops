@@ -106,21 +106,12 @@
         group: ubuntu
         mode: '0600'
         
-    - name: Create argocd namespace
-      when: is_first_control
-      kubernetes.core.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Namespace
-          metadata:
-            name: argocd
-
-    - name: Ensure external-dns and cert-manager namespaces exist
+    - name: Ensure external-dns and cert-manager and argocd namespaces exist
       when: is_first_control
       shell: |
         kubectl create namespace external-dns --dry-run=client -o yaml | kubectl apply -f -
         kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+        kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
