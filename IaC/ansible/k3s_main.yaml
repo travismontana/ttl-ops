@@ -89,7 +89,21 @@
       environment:
         K3S_KUBECONFIG_MODE: "644"
         INSTALL_K3S_VERSION: "{{ k3s_version }}"
-        INSTALL_K3S_EXEC: "server {{ '--cluster-init' if total_nodes | int > 1 else '' }} --tls-san {{ ansible_host }} --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} --node-label clustername={{ cluster_name }} --node-label domainname={{ domainname }} --node-label node-role=control --disable=traefik"
+        INSTALL_K3S_EXEC: >
+          server 
+          {{ '--cluster-init' if total_nodes | int > 1 else '' }} 
+          --tls-san {{ ansible_host }} 
+          --node-name {{ inventory_hostname }} 
+          {% for group in appgroups %}
+          {% for key, value in group.items() %}
+          --node-label appgroup/{{ key }}={{ value | lower }} 
+          {% endfor %}
+          {% endfor %} 
+          --node-label clustername={{ cluster_name }} 
+          --node-label domainname={{ domainname }} 
+          --node-label node-role=control
+          --node-taint node-role.kubernetes.io/control-plane:NoSchedule
+          --disable=traefik
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
         curl -sfL https://get.k3s.io | sh -
@@ -101,7 +115,21 @@
       environment:
         K3S_KUBECONFIG_MODE: "644"
         INSTALL_K3S_VERSION: "{{ k3s_version }}"
-        INSTALL_K3S_EXEC: "server --server https://{{ cluster_name }}-node0.{{ domainname }}:6443 --tls-san {{ ansible_host }} --node-name {{ inventory_hostname }} {% for group in appgroups %}{% for key, value in group.items() %}--node-label appgroup/{{ key }}={{ value | lower }} {% endfor %}{% endfor %} --node-label clustername={{ cluster_name }} --node-label domainname={{ domainname }} --node-label node-role=control --disable=traefik"
+        INSTALL_K3S_EXEC: >
+          server 
+          --server https://{{ cluster_name }}-node0.{{ domainname }}:6443 
+          --tls-san {{ ansible_host }} 
+          --node-name {{ inventory_hostname }} 
+          {% for group in appgroups %}
+          {% for key, value in group.items() %}
+          --node-label appgroup/{{ key }}={{ value | lower }} 
+          {% endfor %}
+          {% endfor %} 
+          --node-label clustername={{ cluster_name }} 
+          --node-label domainname={{ domainname }} 
+          --node-label node-role=control
+          --node-taint node-role.kubernetes.io/control-plane:NoSchedule
+          --disable=traefik"
         K3S_TOKEN: "{{ k3s_token }}"
       shell: |
         curl -sfL https://get.k3s.io | sh -

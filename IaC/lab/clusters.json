@@ -36,6 +36,18 @@
                     "studio": true
                 }
             ]
+        },
+        {
+            "name": "wopr",
+            "site": "lab",
+            "owner": "ttl-ops",
+            "numCnodes": 1,
+            "numWnodes": 1,
+            "appgroups": [
+                {
+                    "wopr": true
+                }
+            ]
         }
     ]
 }
