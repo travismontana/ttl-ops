@@ -4,8 +4,3 @@ description: A Helm chart for *arr applications (sonarr, radarr, bazarr, lidarr)
 type: application
 version: 1.0.1
 appVersion: "latest"
-
-dependencies:
-  - name: jellyfin
-    repository: https://jellyfin.github.io/jellyfin-helm
-    version: 2.7.0

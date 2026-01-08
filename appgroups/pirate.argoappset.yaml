@@ -1,122 +1,42 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: arr-apps
+  name: pirate-applicationset
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"  # Deploy after core infrastructure
 spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
   generators:
-  - matrix:
-      generators:
-      # First dimension: Applications
-      - list:
-          elements:
-          - app: sonarr
-            port: "8989"
-            image: linuxserver/sonarr
-          - app: radarr
-            port: "7878"
-            image: linuxserver/radarr
-          - app: bazarr
-            port: "6767"
-            image: linuxserver/bazarr
-          - app: lidarr
-            port: "8686"
-            image: linuxserver/lidarr
-          - app: sabnzbd
-            port: "8080"
-            image: linuxserver/sabnzbd
-          - app: prowlarr
-            port: "9696"
-            image: linuxserver/prowlarr
-          - app: tautulli
-            port: "8181"
-            image: linuxserver/tautulli
-          - app: overseerr
-            port: "5055"
-            image: linuxserver/overseerr
+    - list:
+        elements:
+          - name: pirate-jellyfin
+            path: appgroups/pirate/jellyfin/helm
+            namespace: pirate
+            wave: "0"
 
-      # Second dimension: Clusters with media label
-      - clusters:
-          selector:
-            matchLabels:
-              argocd.argoproj.io/secret-type: cluster
-              appgroup/pirate: "true"  # Only clusters with media storage
-          values:
-            # Extract cluster-specific values from annotations
-            nfsServer: "danas.hangar.bpfx.org"
-            nfsPath: "/volume1/dataz"
-            domain: "tailandtraillabs.org"
-            storageClass: "local-path"
-            timezone: "America/Chicago"
 
   template:
     metadata:
-      name: '{{.name}}-{{.app}}'
-      labels:
-        app: '{{.app}}'
-        cluster: '{{.name}}'
-        app-group: media
+      name: "{{name}}"
       annotations:
-        argocd.argoproj.io/compare-options: IgnoreExtraneous
-        argocd.argoproj.io/sync-options: PruneLast=true
+        # Optional: gives you a stable order *if you ever sync both at once*
+        argocd.argoproj.io/sync-wave: "{{wave}}"
     spec:
       project: default
-      
       source:
-        repoURL: https://github.com/travismontana/ttl-ops # Update this
+        repoURL: "https://github.com/travismontana/ttl-ops"
         targetRevision: main
-        path: appgroups/pirate/arr-app
+        path: "{{path}}"
         helm:
-          releaseName: '{{.app}}'
-          values: |
-            app:
-              name: {{.app}}
-            
-            image:
-              repository: {{.image}}
-
-            service:
-              port: {{.port}}
-            
-            config:
-              storageClass: "{{.values.storageClass}}"
-
-            media:
-              nfs:
-                server: "{{.values.nfsServer}}"
-                path: "{{.values.nfsPath}}"
-
-            env:
-              TZ: "{{.values.timezone}}"
-              HOST_WHITELIST_ENTRIES: "{{.app}}.{{.name}}.{{.values.domain}}"
-
-            appAuth:
-              enabled: true
-              method: "Basic"
-              username: "{{.app}}"
-              password: "{{.app}}"
-
-            ingress:
-              enabled: true
-              ingressClassName: pirate-traefik
-              hosts:
-                - host: {{.app}}.{{.name}}.{{.values.domain}}
-                  paths:
-                    - path: /
-                      pathType: Prefix
-              tls:
-                - secretName: wildcard-tls
-                  hosts:
-                    - {{.app}}.{{.name}}.{{.values.domain}}
-      
+          # Optional: if you add per-app values later, uncomment and commit the file(s)
+          # valueFiles:
+          #   - values.yaml
+          #
+          # Optional: pass common Helm params here if you want
+          # parameters:
+          #   - name: image.tag
+          #     value: "..."
       destination:
-        server: '{{.server}}'
-        namespace: '{{.app}}'
-      
+        server: "https://kubernetes.default.svc"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true
@@ -132,9 +52,3 @@ spec:
             duration: 5s
             factor: 2
             maxDuration: 3m
-      
-      ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        jqPathExpressions:
-        - .spec.template.metadata.annotations."kubectl.kubernetes.io/restartedAt"

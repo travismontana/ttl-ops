@@ -14,4 +14,4 @@ jellyfin:
     storageClass: local-path
   media:
     enabled: true
-    existingClaim: "media-nfs"
+    existingClaim: "media-nfs-pvc"

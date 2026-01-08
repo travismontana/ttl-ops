@@ -60,21 +60,3 @@ sabnzbd:
   config:
     host_whitelist: "sabnzbd.pirate.tailandtraillabs.org, sabnzbd, localhost"
 
-jellyfin:
-  jellyfin:
-    ingress:
-      enabled: true
-      hosts:
-        - host: jellyfin.pirate.tailandtraillabs.org
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
-      tls:
-        - secretName: wildcard-tls
-          hosts:
-            - jellyfin.pirate.tailandtraillabs.org
-    persistence:
-      storageClass: local-path
-    media:
-      enabled: true
-      existingClaim: "media-nfs"
