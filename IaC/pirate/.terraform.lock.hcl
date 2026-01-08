@@ -1,0 +1,42 @@
+# This file is maintained automatically by "tofu init".
+# Manual edits may be lost in future updates.
+
+provider "registry.opentofu.org/bpg/proxmox" {
+  version = "0.91.0"
+  hashes = [
+    "h1:iU3T+orD8861Tiv5HA4mghqxb1f68a2BuvKi7tt1yjA=",
+    "zh:001fda547318587c61145e64684fc760810cfa5575167d10d7790092832da21d",
+    "zh:02c9b4fddc833de2c37201203333431d0fc952e2297d59ad60d4d868b04571cd",
+    "zh:16a71871fed6d8341194d04a1fdaee96b9a2b4d3eae4424b1ca45b777893e60d",
+    "zh:3211527b73cac35b61687dacd138ec745eb0f457c9aa6570aebd6d2c6e27ad02",
+    "zh:418800f9bdcc5a3bbabee521c52a5c84056b68199f6a0436752f1d58402673b8",
+    "zh:4f74607c07f41de5631baac6f23e0a2b00eea0483b188b280f222fa2e5ca927b",
+    "zh:75ef210ac025211dd9fb90e8b3ee72876a3e22317478208d745ea6097a1e6371",
+    "zh:7eaa5d0b1dea5111891f75824982a60375948f634641c59980cc757ff521c373",
+    "zh:89ccf7d922ba6dfbfc4fbc60a8280a4cd7d4f20686de21b3dfabbdc89db8a68e",
+    "zh:9a89153a14c3f0c1bc354c5f9e01b8983c6a9193b594a27bf3c44b28183b80c8",
+    "zh:a755e284557c81043562e93b95b040291d3c15d4690c8ee2b32b4f7a0847476d",
+    "zh:d65328f5814dc09cb9371bad4e02869eeee6d28723f4499256fb8df4d5c07445",
+    "zh:dbc3cac9c392ecd0c2f788a67ac527a6fb1c9112c38290fdac3d8daa0e4274ac",
+    "zh:e6e50980686c3176b9402ce63356a767c275bf874c6cdfc40a6dcda9045680a0",
+    "zh:f26e0763dbe6a6b2195c94b44696f2110f7f55433dc142839be16b9697fa5597",
+  ]
+}
+
+provider "registry.opentofu.org/hashicorp/aws" {
+  version     = "5.100.0"
+  constraints = "~> 5.0"
+  hashes = [
+    "h1:zef23ac/YWw9O2FepFWRs+my9iWWUkniL4dT4LnCKjU=",
+    "zh:1a41f3ee26720fee7a9a0a361890632a1701b5dc1cf5355dc651ddbe115682ff",
+    "zh:30457f36690c19307921885cc5e72b9dbeba369445815903acd5c39ac0e41e7a",
+    "zh:42c22674d5f23f6309eaf3ac3a4f1f8b66b566c1efe1dcb0dd2fb30c17ce1f78",
+    "zh:4cc271c795ff8ce6479ec2d11a8ba65a0a9ed6331def6693f4b9dccb6e662838",
+    "zh:60932aa376bb8c87cd1971240063d9d38ba6a55502c867fdbb9f5361dc93d003",
+    "zh:864e42784bde77b18393ebfcc0104cea9123da5f4392e8a059789e296952eefa",
+    "zh:9750423138bb01ecaa5cec1a6691664f7783d301fb1628d3b64a231b6b564e0e",
+    "zh:e5d30c4dec271ef9d6fe09f48237ec6cfea1036848f835b4e47f274b48bda5a7",
+    "zh:e62bd314ae97b43d782e0841b13e68a3f8ec85cc762004f973ce5ce7b6cdbfd0",
+    "zh:ea851a3c072528a4445ac6236ba2ce58ffc99ec466019b0bd0e4adde63a248e4",
+  ]
+}

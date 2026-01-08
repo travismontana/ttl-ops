@@ -1,0 +1,17 @@
+{
+    "domainname": "tailandtraillabs.org",
+    "cluster": [
+        {
+            "name": "pirate",
+            "site": "lab",
+            "owner": "ttl-ops",
+            "numCnodes": 1,
+            "numWnodes": 1,
+            "appgroups": [
+                {
+                    "pirate": true
+                }
+            ]
+        }
+    ]
+}
