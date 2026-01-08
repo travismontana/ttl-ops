@@ -12,6 +12,8 @@ jellyfin:
           - jellyfin.pirate.tailandtraillabs.org
   persistence:
     storageClass: local-path
-  media:
-    enabled: true
-    existingClaim: "media-nfs-pvc"
+    media:
+      enabled: true
+      existingClaim: "pirate-jellyfin-media"
+      accessMode: ReadWriteMany
+      size: 1Ti

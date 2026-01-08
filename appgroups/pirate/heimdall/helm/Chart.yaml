@@ -13,9 +13,9 @@
 # limitations under the License.
 
 apiVersion: v2
-name: wopr-heimdall
+name: pirate-heimdall
 version: 0.1.5-alpha
-description: WOPR Core Systems - heimdall
+description: heimdall
 
 dependencies:
   - name: heimdall
