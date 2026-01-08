@@ -11,6 +11,10 @@ spec:
             path: appgroups/pirate/jellyfin/helm
             namespace: pirate
             wave: "0"
+          - name: pirate-heimdall
+            path: appgroups/pirate/heimdall/helm
+            namespace: pirate
+            wave: "0"
 
 
   template:
