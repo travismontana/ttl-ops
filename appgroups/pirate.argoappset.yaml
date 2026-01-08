@@ -49,7 +49,7 @@ spec:
             # Extract cluster-specific values from annotations
             nfsServer: "danas.hangar.bpfx.org"
             nfsPath: "/volume1/dataz"
-            domain: "abode.tailandtraillabs.org"
+            domain: "tailandtraillabs.org"
             storageClass: "local-path"
             timezone: "America/Chicago"
 
