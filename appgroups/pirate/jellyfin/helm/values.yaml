@@ -17,3 +17,7 @@ jellyfin:
       existingClaim: "pirate-jellyfin-media"
       accessMode: ReadWriteMany
       size: 1Ti
+  volumes:
+    - name: dri
+      hostPath:
+        path: /dev/dri
