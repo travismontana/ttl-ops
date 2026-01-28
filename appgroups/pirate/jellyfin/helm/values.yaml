@@ -1,6 +1,8 @@
 jellyfin:
   ingress:
     enabled: true
+    annotations: 
+	external-dns.alpha.kubernetes.io/ignore: "true"
     hosts:
       - host: jellyfin.pirate.tailandtraillabs.org
         paths:
@@ -17,7 +19,3 @@ jellyfin:
       existingClaim: "pirate-jellyfin-media"
       accessMode: ReadWriteMany
       size: 1Ti
-  volumes:
-    - name: dri
-      hostPath:
-        path: /dev/dri
