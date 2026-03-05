@@ -1,0 +1,20 @@
+maintainerr:
+  ingress:
+    main:
+      enabled: true
+      annotations: 
+        external-dns.alpha.kubernetes.io/ignore: "false"
+      hosts:
+        - host: maintainerr.pirate.tailandtraillabs.org
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: wildcard-tls
+          hosts:
+            - maintainerr.pirate.tailandtraillabs.org
+  config:
+    accessModes: ReadWriteOnce
+    storageClass: local-path
+    size: 1Gi
+    volumePath: /data

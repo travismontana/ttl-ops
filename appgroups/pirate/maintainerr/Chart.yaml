@@ -1,0 +1,12 @@
+apiVersion: v2
+name: maintainerr
+description: Maintainerr
+type: application
+version: 1.0.0
+appVersion: "2.6.0"
+
+dependencies:
+  - name: maintainerr
+    repository: oci://oci.trueforge.org/truecharts/maintainerr
+    version: 2.6.0
+
