@@ -1,0 +1,11 @@
+apiVersion: v2
+name: spoolman-stack
+description: Spoolman media server
+type: application
+version: 1.0.0
+appVersion: "2.6.0"
+
+dependencies:
+  - name: jellyfin
+    repository: https://jellyfin.github.io/jellyfin-helm
+    version: 2.6.0
