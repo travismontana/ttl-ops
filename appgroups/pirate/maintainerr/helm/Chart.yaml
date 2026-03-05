@@ -8,5 +8,5 @@ appVersion: "2.6.0"
 dependencies:
   - name: maintainerr
     repository: oci://oci.trueforge.org/truecharts/maintainerr
-    version: 3.0.1
+    version: latest
 
