@@ -88,6 +88,7 @@ spec:
             image:
               registry: {{.registry}}
               repository: {{.image}}
+              pullPolicy: Always
 
             service:
               port: {{.port}}
