@@ -46,6 +46,10 @@ spec:
             port: "5055"
             image: linuxserver/overseerr
             registry: lscr.io
+          - app: requestrr
+            port: "4545"
+            image: linuxserver/requestrr
+            registry: lscr.io
 
 
       # Second dimension: Clusters with media label
